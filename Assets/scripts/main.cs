@@ -63,8 +63,20 @@ public class main: MonoBehaviour {
 	Deck activist2;
 	Deck hacker1;
 	Deck hacker2;
+	//test array
+	int [] num = { 1,1,3,3, 5,5,7,7, 8,8, 11,11, 02,02,22,22, 06,06,66,66, 04,04,44,44};
+
 
 	void Start () {
+		activist1 = new Deck();
+		activist1.playerDeck();
+		activist2 = new Deck();
+		activist2.playerDeck();
+		hacker1 = new Deck();
+		hacker1.playerDeck();
+		hacker2 = new Deck();
+		hacker2.playerDeck();
+
 		Random.seed = (int)System.DateTime.Now.Ticks;
 		deckOfCards = new Deck();
 		fs = new FileInfo("assets/gameinfo/gameInfo.txt");
@@ -322,82 +334,42 @@ public class main: MonoBehaviour {
 		xtraWhat= initRumours(xtraWhat, whatX);
 		xtraWho= initRumours(xtraWho, whoX);
 
-		//setting up the cards
-		//where
-//		whereFcard[0].desc = whereC; 
-//		whereFcard[1].desc = whereC; 
-
-//		whereRcard[0].desc = whereC;
-//		whereRcard[1].desc = whereC;
-
-		//when
-		//for(int i = 0; i < whenFcard.Length; i++){
-//		whenFcard[0].desc = whenC; 
-//		whenFcard[1].desc = whenC; 
-		//}
-		//for(int i = 0; i < whenRcard.Length; i++){
-//		whenRcard[0].desc = whenC;
-//		whenRcard[1].desc = whenC;
-		//}
-		//who
-		//for(int i = 0; i < whoFcard.Length; i++){
-//			whoFcard[0].desc = whoC; 
-//		whoFcard[1].desc = whoC; 
-		//}
-//		for(int i = 0; i < whoRcard.Length; i++){
-//		whoRcard[0].desc = whoC;
-//		whoRcard[1].desc = whoC;
-//		}
-		//what
-//		for(int i = 0; i < whatFcard.Length; i++){
-//		whatFcard[0].desc = whatC;
-//		whatFcard[1].desc = whatC; 
-//		}
-//		for(int i = 0; i < whatRcard.Length; i++){
-//			whatRcard[0].desc = whatC;
-//		whatRcard[1].desc = whatC;
-
-	//	Debug.Log (whereFcard[0].desc);
-	//	Debug.Log (whereFcard[1].desc);
+	
 
 		//24 cards in total
 		deckOfCards.addCard (whoFcard);
 		deckOfCards.addCard (whereFcard);//add array
 		deckOfCards.addCard (whenFcard);
 		deckOfCards.addCard (whatFcard);
-		//Debug.Log (deckOfCards.lastCardIndex());
-
-		//deckOfCards.addCard (whereRcard[0]);
+	
 
 		deckOfCards.addCard (whoRcard);	
 		deckOfCards.addCard (whatRcard);
 		deckOfCards.addCard (whenRcard);
 		deckOfCards.addCard (whereRcard);
 	
-		//Debug.Log (deckOfCards.lastCardIndex());
+	
 
 		deckOfCards.addCard (xtraWhen); //16
 		deckOfCards.addCard (xtraWhat);
-		//Debug.Log (deckOfCards.lastCardIndex());
+	
 
 		deckOfCards.addCard (xtraWhen);
 		deckOfCards.addCard (xtraWho);
 	
-		//Debug.Log (deckOfCards.lastCardIndex());
-
-
-		//		} 
-	}
-
-	void exchange(int [] arr, int i, int j){
-		int d = arr[i];
-		arr[i] = arr[j];
-		arr[j] = d;
 	}
 
 
+	//to reuse for int, just replace card with int [] d and deck arr with int [] arr
+	void exchange(Deck arr, int i, int j){
+		Card d = arr.cards[i];
+		arr.cards[i] = arr.cards[j];
+		arr.cards[j] = d;
+	}
+
+	//int versinn
+	/*
 	public void shuffleDeck(){
-		int [] num = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24};
 		int j;
 		for(int i = 0; i < num.Length; i++){
 			j = Random.Range (0,24);
@@ -409,14 +381,306 @@ public class main: MonoBehaviour {
 			exchange (num, i, j);
 		}
 
+	}
+*/
+	public void shuffleDeck(){
+		int j;
+		for(int i = 0; i < deckOfCards.cards.Length; i++){
+			j = Random.Range (0,deckOfCards.cards.Length);
+			exchange (deckOfCards, i, j);
+		}
+		
+		for(int i = 0; i < deckOfCards.cards.Length; i++){
+			j = Random.Range (0,deckOfCards.cards.Length);
+			exchange (deckOfCards, i, j);
+		}
+		
+	}
 
+
+	public void dealCards(){
+
+
+		Deck d1 = new Deck (6);
+		Deck d2 = new Deck (6);
+
+		Deck d3 = new Deck (6);
+		Deck d4 = new Deck (6);
+
+		//hacker1 = genFactHand(hacker1);
+		//dealHackers(d1, d2);
+
+		d1 = genFactHand(d1);
+//		d1 = getRumourForHacker(d1); need to do asap
+		
+	//	d2 = genFactHand(d2);
+	//	d2 = getRumourForHacker(d2);
+
+	//	num = resizeDeck(num);
+
+		//when d1-d4 were int []
+		/*
+		Debug.Log ("new number deck");
 		for(int i = 0; i < num.Length; i++){
 			Debug.Log (num[i]);
 		}
+		d3 = genRumourHand(num);
+		d4 = genRumourHand (num);
+		//dealActivists (d3, d4);
+
+
+		Debug.Log ("hacker1's hand ");
+		for(int i = 0; i < d1.Length; i++){
+			Debug.Log (d1[i]);
+		}
+		Debug.Log ("hacker2's hand ");
+		for(int i = 0; i < d2.Length; i++){
+			Debug.Log (d2[i]);
+		}
+
+
+
+		Debug.Log ("activist1's hand ");
+		for(int i = 0; i < d3.Length; i++){
+			Debug.Log (d3[i]);
+		}
+		Debug.Log ("activist2's hand ");
+		for(int i = 0; i < d4.Length; i++){
+			Debug.Log (d4[i]);
+		}
+
+		Debug.Log ("cards in deck ");
+		for(int i = 0; i < num.Length; i++){
+			Debug.Log (num[i]);
+		}
+		*/
 	}
 
-	public void dealCards(){
-	
-	
+	//all that is greyed out is the backbone of playing with the deck
+	/*
+	public int lastIndex(int []n){
+		int i = 0;
+		while( (i < n.Length) && (n[i]!= 0) )
+		{
+			i++;
+		}
+		Debug.Log("Last index in array: "+i);
+		return i;
 	}
+
+
+	public int getElement(int n){
+		int j = -1;
+		//int [] num = { 1,1,3,3, 5,5,7,7,00,00,      11,11,02,02,22,22, 06,06,66,66,04,       04,44,44};
+
+		for(int i = 0; i < num.Length; i++){
+			if(n ==num[i]){
+				j = num[i];
+				num[i] = -1;
+				break;
+			}
+		}
+		return j;
+	}
+
+	public int[] genFactHand(int []hacker){
+		int []dummy = new int[6];
+		bool repeated;
+		dummy[0] = getElement (44);
+		dummy[1] = getElement (11);
+		dummy[2] = getElement(22);
+		dummy[3] = getElement (66);
+
+		return dummy;
+	}
+*/
+	public Deck genFactHand(Deck hacker){
+		Deck dummy = new Deck(6);
+//		dummy.addCard(Card c)
+//		dummy[0] = getElement (44);
+//		dummy[1] = getElement (11);
+//		dummy[2] = getElement(22);
+//		dummy[3] = getElement (66);
+		
+		return dummy;
+	}
+
+	public bool isFact(Card i){
+		if(i.type == 'f')
+			return true;
+		else
+		return false;
+	}
+	
+	public bool isRumour(Card i){
+		if(i.type == 'r')
+			return true;
+		else
+			return false;
+	}
+
+	/*
+	public Deck getRumourForHacker(Deck h){
+		int l = lastCardIndex();
+		
+		int d1 = Random.Range(0,24);
+		int dummy = num[d1];
+		int d2 = Random.Range(0,24);
+		int dummy2 = num[d2];
+		
+		
+		for(int i = 0; i < num.Length; i++){
+			if(isRumour(num[i])){
+				h[l] = num[i];
+				num[i] = -1;
+				i = num.Length;
+			}
+		}*/
+/*
+	public bool isFact(int i){
+		switch(i){
+		case 11:
+		case 22:
+		case 44:
+		case 66: return true; break;
+		}
+		return false;
+	}
+
+	public bool isRumour(int i){
+		switch(i){
+		case 0:
+		case 1: 
+		case 2: 
+		case 3:
+		case 4:
+		case 5:
+		case 6: return true; break;
+		}
+		return false;
+	}
+
+	public int[] getRumourForHacker(int []h){
+		int l = lastIndex(h);
+
+		int d1 = Random.Range(0,24);
+		int dummy = num[d1];
+		int d2 = Random.Range(0,24);
+		int dummy2 = num[d2];
+
+	
+	for(int i = 0; i < num.Length; i++){
+		if(isRumour(num[i])){
+				h[l] = num[i];
+				num[i] = -1;
+				i = num.Length;
+		}
+	}
+	
+
+		for(int i = 0; i < num.Length; i++){
+		if(isRumour(num[i])){
+				if(h[l] == num[i])
+				{;
+				}
+				else
+				{
+					h[l+1] = num[i];
+					num[i] = -1;
+					i = num.Length;
+				}
+		}
+	}
+
+		return h;
+
+
+	}
+
+
+	public int [] resizeDeck(int []i){ //converted to return deck
+
+
+		int count = 0;
+
+		for(int j = 0; j < i.Length; j++){
+			if(i[j]!=-1){
+				count++;
+			}
+		}
+
+		int [] d = new int[count];
+		int index = 0;
+
+		for(int j = 0; j < i.Length; j++){
+			if(i[j]!=-1){
+				d[index] = i[j];
+				index++;
+			}
+		}
+
+		return d;
+	}
+
+
+	public int[] genRumourHand(int [] h){ // converted in deck file to return Deck
+		int dummy;
+		int dIndex;
+		bool repeated;
+
+	
+		int size = (h.Length+1) /2;
+		int []arr = new int[size];
+
+
+		int numIndex = 0;
+		int arrIndex = 0;
+
+		while((numIndex < num.Length) && arrIndex < arr.Length )
+		{
+			if( (num[numIndex] == arr[arrIndex]) || (num[numIndex] == -1) )
+			{
+				numIndex++;
+			}
+			else
+			if(num[numIndex] != arr[arrIndex])
+			{
+				dIndex = 0;
+				repeated = false;
+				while( (dIndex < arr.Length) && (arr[dIndex] != 0) && repeated == false)
+				{
+					if(arr[dIndex]!= num[numIndex])
+					{
+						dIndex++;
+
+					}
+					else
+					if(arr[dIndex]== num[numIndex])
+					{
+						repeated = true;
+						
+					}
+				}
+
+				if(repeated == false)
+				{
+					arr[arrIndex] = num[numIndex];
+					num[numIndex] = -1;
+					arrIndex++;
+					numIndex++;
+				}
+				else
+					if(repeated == true)
+				{
+					numIndex ++;
+				}
+			}
+
+		}
+
+		return arr;
+	}
+
+*/
 }
+	

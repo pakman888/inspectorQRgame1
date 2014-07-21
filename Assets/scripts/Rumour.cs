@@ -8,7 +8,6 @@ public class Rumour : Card {
 	public Rumour(){
 		truth = true;
 		lie = true;
+		type = 'r';
 	}
-
-
 }
