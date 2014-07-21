@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Deck : MonoBehaviour {
+public class Deck {
 
 	// Use this for initialization
 	public Card []cards;
@@ -14,11 +14,16 @@ public class Deck : MonoBehaviour {
 	}
 
 	public Deck( int num){
+
 		cards = new Card[num];
+	
 		for(int i = 0; i < cards.Length;i++){
 			cards[i] = new Card();
 		}
+
+		Debug.Log ("cards in deck: "+cards.Length);
 	}
+
 	public void playerDeck(){
 		cards = null;
 		cards = new Card[6];
@@ -26,40 +31,26 @@ public class Deck : MonoBehaviour {
 			cards[i] = new Card();
 		}
 	}
+
 	public int lastCardIndex(){
 		int i = 0;
-		while( (i < cards.Length) && (cards[i].desc!= " ") )
+		while( (i < cards.Length) &&  (cards[i].desc != " "))
 		{
 			i++;
 		}
 		return i;
 	}
-	
 
-
-	public Deck resizeDeck(Deck i){
-		
-		
-		int count = 0;
-		
-		for(int j = 0; j < i.cards.Length; j++){
-			if(i.cards[j]!= null){
-				count++;
-			}
+	public int lastCardIndex(Deck d){
+		int i = 0;
+		while( (i < d.cards.Length) &&  (d.cards[i].desc != " "))
+		{
+			i++;
 		}
-		
-		Deck d = new Deck(count);
-		int index = 0;
-		
-		for(int j = 0; j < i.cards.Length; j++){
-			if(i.cards[j] != null){
-				d.cards[index] = i.cards[j];
-				index++;
-			}
-		}
-		
-		return d;
+		return i;
 	}
+
+
 
 	public void addCard(Card c){
 		cards[lastCardIndex()] = c;
@@ -74,10 +65,115 @@ public class Deck : MonoBehaviour {
 		cards[lastCardIndex()] = c[1];
 	}
 
-	public Card getCard(Deck d, string desc){
+	public Deck resizeDeck(Deck i){ //converted to return deck
+		
+		
+		int count = 0;
+		
+		for(int j = 0; j < i.cards.Length; j++){
+			if(i.cards[j]!=null){
+				count++;
+			}
+		}
+		
+		Deck d = new Deck(count);
+		int index = 0;
+		
+		for(int j = 0; j < i.cards.Length; j++){
+			if(i.cards[j]!=null){
+				d.cards[index] = i.cards[j];
+				index++;
+			}
+		}
+		
+		return d;
+	}
+
+
+
+	public Card getCard(Deck d, string f, char t){
 //		Card c = d.cards[index]; //not done.
 //		cards[index] = null;
-		Card c = new Card();
+		Card c;
+		int index = 0;
+
+		for(int i = 0; i < d.cards.Length;i++)
+		{
+			if( d.cards[i].desc != f || d.cards[i].desc == null)//so far works
+			{
+				//Debug.Log (d.cards[i].desc);
+				index+=1;
+			}
+			
+			if(d.cards[i].desc == f)//so far works
+			{
+				//	Debug.Log ("good so far");
+				if(d.cards[i].type == t)
+				{
+					//		Debug.Log ("yeaaah");
+					i = d.cards.Length;
+				}
+				else
+					if(d.cards[i].type !=t)
+				{
+					//	Debug.Log (d.cards[i].type);
+					index+=1;
+				}
+			}
+		}
+
+
+
+		//almost!!! it gets blown from null values...
+		/*
+		for(int i = 0; i < d.cards.Length;i++)
+		{
+			if( d.cards[i].desc != f[0].desc || d.cards[i].desc == null)//so far works
+			{
+				//Debug.Log (d.cards[i].desc);
+				index+=1;
+			}
+
+			if(d.cards[i].desc == f[0].desc)//so far works
+			{
+			//	Debug.Log ("good so far");
+				if(d.cards[i].type == f[0].type)
+				{
+			//		Debug.Log ("yeaaah");
+					i = d.cards.Length;
+				}
+				else
+				if(d.cards[i].type != f[0].type)
+				{
+				//	Debug.Log (d.cards[i].type);
+					index+=1;
+				}
+			}
+		}*/
+		//Debug.Log ("index : "+index); //searching needs to check for null cards. rest works
+
+	//	Debug.Log ("adding : "+d.cards[index].desc+" at index "+index);
+
+	//	c = d.cards[index];
+
+		
+	//	Debug.Log ("check removed card : "+d.cards[index].desc+" at index "+index);
+	//	d.cards[index] = null;
+	
+
+	//	Debug.Log (d.cards[index]);
+
+		if(t == 'f'){
+			c = new Fact();
+
+		}
+
+		if(t == 'r'){
+			c = new Rumour();
+		}
+
+		c = d.cards[index];
+		d.cards[index] = new Card();
 		return c;
 	}
 

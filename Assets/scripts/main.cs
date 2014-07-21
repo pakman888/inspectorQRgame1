@@ -356,7 +356,14 @@ public class main: MonoBehaviour {
 
 		deckOfCards.addCard (xtraWhen);
 		deckOfCards.addCard (xtraWho);
-	
+
+		/*
+		Debug.Log ("printing out deck");
+		for(int i = 0; i < deckOfCards.cards.Length; i++)
+		{
+			Debug.Log (deckOfCards.cards[i].desc + " type- "+ deckOfCards.cards[i].type);
+		}
+	*/
 	}
 
 
@@ -397,6 +404,43 @@ public class main: MonoBehaviour {
 		
 	}
 
+	public Deck getRumourForHacker(Deck h){
+		int l = h.lastCardIndex();
+		
+		int d1 = Random.Range(0,h.cards.Length);
+
+		int d2 = Random.Range(0,h.cards.Length);
+
+		
+		
+		for(int i = 0; i < deckOfCards.cards.Length; i++){
+			if(isRumour(deckOfCards.cards[i])){
+				h.cards[l] = deckOfCards.cards[i];
+				deckOfCards.cards[i] = null;
+				i = deckOfCards.cards.Length;
+			}
+		}
+		
+		
+		for(int i = 0; i < deckOfCards.cards.Length; i++){
+			if(isRumour(deckOfCards.cards[i])){
+				if(h.cards[l] == deckOfCards.cards[i])
+				{;
+				}
+				else
+				{
+					h.cards[l+1] = deckOfCards.cards[i];
+					deckOfCards.cards[i] = null;
+					i = deckOfCards.cards.Length;
+				}
+			}
+		}
+		
+		return h;
+		
+		
+	}
+
 
 	public void dealCards(){
 
@@ -409,10 +453,15 @@ public class main: MonoBehaviour {
 
 		//hacker1 = genFactHand(hacker1);
 		//dealHackers(d1, d2);
+		//deckOfCards = deckOfCards.resizeDeck(deckOfCards);
+		d1 = genFactHand(deckOfCards);
 
-		d1 = genFactHand(d1);
-//		d1 = getRumourForHacker(d1); need to do asap
-		
+
+		d1 = getRumourForHacker(d1); //need to do asap. not done properly...
+		for(int i = 0; i < 6; i++)
+		{
+			Debug.Log (d1.cards[i].desc);
+		}
 	//	d2 = genFactHand(d2);
 	//	d2 = getRumourForHacker(d2);
 
@@ -494,14 +543,14 @@ public class main: MonoBehaviour {
 		return dummy;
 	}
 */
-	public Deck genFactHand(Deck hacker){
+	public Deck genFactHand(Deck md){
 		Deck dummy = new Deck(6);
-//		dummy.addCard(Card c)
-//		dummy[0] = getElement (44);
-//		dummy[1] = getElement (11);
-//		dummy[2] = getElement(22);
-//		dummy[3] = getElement (66);
-		
+
+		dummy.cards[0]= md.getCard(deckOfCards, whereC, whereFcard[0].type);
+		dummy.cards[1]= md.getCard(deckOfCards, whoC, whoFcard[0].type);
+		dummy.cards[2]= md.getCard(deckOfCards, whenC, whenFcard[0].type);
+		dummy.cards[3]= md.getCard(deckOfCards, whatC, whatFcard[0].type);
+		//dummy.addCard (md.getCard(deckOfCards, whoC));
 		return dummy;
 	}
 
@@ -513,30 +562,13 @@ public class main: MonoBehaviour {
 	}
 	
 	public bool isRumour(Card i){
-		if(i.type == 'r')
-			return true;
-		else
+		if(i == null || (i.type != 'r'))
 			return false;
+		else
+			return true;
 	}
 
 	/*
-	public Deck getRumourForHacker(Deck h){
-		int l = lastCardIndex();
-		
-		int d1 = Random.Range(0,24);
-		int dummy = num[d1];
-		int d2 = Random.Range(0,24);
-		int dummy2 = num[d2];
-		
-		
-		for(int i = 0; i < num.Length; i++){
-			if(isRumour(num[i])){
-				h[l] = num[i];
-				num[i] = -1;
-				i = num.Length;
-			}
-		}*/
-/*
 	public bool isFact(int i){
 		switch(i){
 		case 11:

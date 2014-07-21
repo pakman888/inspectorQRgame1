@@ -12,5 +12,9 @@ public class Fact : Card {
 		type = 'f';
 	}
 
-
+	public void fcopy(Fact f){
+		truth = f.truth;
+		lie = f.lie;
+		type = f.type;
+	}
 }
