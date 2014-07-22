@@ -406,22 +406,75 @@ public class main: MonoBehaviour {
 
 	public Deck getRumourForHacker(Deck h){
 		int l = h.lastCardIndex();
-		
-		int d1 = Random.Range(0,h.cards.Length);
+		int addLimit = 0;
+		int totalAddLimit = 2;
+		bool repeated;
+		//Debug.Log ("inside getRumour. Last index in the deck- "+l);
 
-		int d2 = Random.Range(0,h.cards.Length);
+		for(int dIndex = 0; dIndex < deckOfCards.cards.Length; dIndex++){
+			repeated = false;
+			if(isRumour(deckOfCards.cards[dIndex]))
+			{	
+			//	Debug.Log (deckOfCards.cards[dIndex].desc + " is a rumour!");
+				for(int hIndex = 0; hIndex < h.cards.Length; hIndex++){
+//					Debug.Log ("index - "+ hIndex);
+//					Debug.Log ("dcard ("+deckOfCards.cards[dIndex].desc+")");
+//					Debug.Log ("hcard ("+h.cards[hIndex].desc+")");
+					if( (deckOfCards.cards[dIndex].desc == h.cards[hIndex].desc)&& h.cards[hIndex].desc != null)
+					{
+								repeated = true;
+		//						Debug.Log ("Repeated card.");
+								hIndex = h.cards.Length;
+					}
+				}
+			
+				if((repeated == false)){
+					//	if( (deckOfCards.cards[dIndex].desc != h.cards[hIndex].desc))
+					//	{
+					
+		//			Debug.Log ("Unique card.");
+					
+					h.cards[(l+addLimit)] = deckOfCards.cards[dIndex];
+					//Debug.Log ("added card.");
+		//			deckOfCards.cards[dIndex] = null;
+					deckOfCards.cards[dIndex] = new Card();						
+					addLimit+=1;
+					
+					if(addLimit >= totalAddLimit)
+					{
+						dIndex = deckOfCards.cards.Length;
+					}
 
-		
-		
-		for(int i = 0; i < deckOfCards.cards.Length; i++){
-			if(isRumour(deckOfCards.cards[i])){
-				h.cards[l] = deckOfCards.cards[i];
-				deckOfCards.cards[i] = null;
-				i = deckOfCards.cards.Length;
 			}
+
+				
+
+			//}
+			
+		}
+		}
+		/*
+		for(int i = 0; i < deckOfCards.cards.Length; i++){
+			for(int j = 0; j < h.cards.Length; j++)
+			{
+
+				if( isRumour(deckOfCards.cards[i]) && (deckOfCards.cards[i].desc != h.cards[j].desc) && (h.cards[j].desc!=" ") ){
+					h.cards[l] = deckOfCards.cards[i];
+
+					Debug.Log ("current card in deck- "+deckOfCards.cards[i].desc);
+
+					Debug.Log ("adding first card- "+h.cards[l].desc);
+					deckOfCards.cards[i] = null;
+					deckOfCards.cards[i] = new Card();
+					j = h.cards.Length;
+					i = deckOfCards.cards.Length;
+				}
+
+			}
+
 		}
 		
-		
+
 		for(int i = 0; i < deckOfCards.cards.Length; i++){
 			if(isRumour(deckOfCards.cards[i])){
 				if(h.cards[l] == deckOfCards.cards[i])
@@ -431,11 +484,12 @@ public class main: MonoBehaviour {
 				{
 					h.cards[l+1] = deckOfCards.cards[i];
 					deckOfCards.cards[i] = null;
+					deckOfCards.cards[i] = new Card();
 					i = deckOfCards.cards.Length;
 				}
 			}
 		}
-		
+		*/
 		return h;
 		
 		
@@ -456,14 +510,20 @@ public class main: MonoBehaviour {
 		//deckOfCards = deckOfCards.resizeDeck(deckOfCards);
 		d1 = genFactHand(deckOfCards);
 
-
 		d1 = getRumourForHacker(d1); //need to do asap. not done properly...
+
 		for(int i = 0; i < 6; i++)
 		{
-			Debug.Log (d1.cards[i].desc);
+			Debug.Log (d1.cards[i].desc + " type- "+ d1.cards[i].type);
 		}
-	//	d2 = genFactHand(d2);
-	//	d2 = getRumourForHacker(d2);
+		d2 = genFactHand(d2);
+		d2 = getRumourForHacker(d2);
+
+		for(int i = 0; i < 6; i++)
+		{
+			Debug.Log (d2.cards[i].desc + " type- "+ d1.cards[i].type);
+		}
+
 
 	//	num = resizeDeck(num);
 
@@ -562,10 +622,17 @@ public class main: MonoBehaviour {
 	}
 	
 	public bool isRumour(Card i){
-		if(i == null || (i.type != 'r'))
-			return false;
+		bool rumour = false;
+
+		if(i.type == 'r')
+			rumour = true;
 		else
-			return true;
+			if(i.type == null)
+		{
+			;
+		}
+
+		return rumour;
 	}
 
 	/*
