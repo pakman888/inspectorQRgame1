@@ -96,8 +96,21 @@ public class main: MonoBehaviour {
 
 		r.Close ();
 
-		setGameInfo(Random.Range(0,7),Random.Range(0,7),Random.Range(0,7),Random.Range(0,7) );
-		setXtraInfo(Random.Range(0,7),Random.Range(0,7),Random.Range(0,7),Random.Range(0,7) );
+		int valWhere = Random.Range(0,7);
+		int valWhen = Random.Range(0,7);
+		int valWhat = Random.Range(0,7);
+		int valWho = Random.Range(0,7);
+
+		int xWhere = checkNotDuplicate(valWhere);
+		int xWhen = checkNotDuplicate(valWhen);
+		int xWhat = checkNotDuplicate(valWhat);
+		int xWho = checkNotDuplicate(valWho);
+
+
+	//	(int whenIndex,int whereIndex,int whoIndex,int whatIndex )
+		setGameInfo(valWhen,valWhere,valWho,valWhat );
+		//int whenIndex,int whereIndex,int whoIndex,int whatIndex 
+		setXtraInfo(xWhen,xWhere,xWho,xWhat );
 		makeDeck();
 		shuffleDeck();
 		dealCards();
@@ -106,6 +119,16 @@ public class main: MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
+	}
+
+	public int checkNotDuplicate(int num){
+		int j = Random.Range(0,7);
+		while(j== num){
+			j = Random.Range(0,7);
+		}
+		Debug.Log("real rumour- "+num);
+		Debug.Log("fake rumour- "+j);
+		return j;
 	}
 
 
@@ -328,12 +351,29 @@ public class main: MonoBehaviour {
 		whatRcard= initRumours(whatRcard, whatC);
 		whenFcard= initFacts(whenFcard, whenC);
 		whenRcard= initRumours(whenRcard, whenC);
+		Debug.Log("Facts : ");
+		Debug.Log(whoFcard[0].desc);
+		Debug.Log(whatFcard[0].desc);
+		Debug.Log(whereFcard[0].desc);
+		Debug.Log(whenFcard[0].desc);
+
+
+		Debug.Log("");
+		Debug.Log("Fact rumours: ");
+		Debug.Log(whoRcard[0].desc);
+		Debug.Log(whatRcard[0].desc);
+		Debug.Log(whereRcard[0].desc);
+		Debug.Log(whenRcard[0].desc);
 
 		xtraWhen= initRumours(xtraWhen, whenX);
 		xtraWhere= initRumours(xtraWhere, whereX);
 		xtraWhat= initRumours(xtraWhat, whatX);
 		xtraWho= initRumours(xtraWho, whoX);
-
+		Debug.Log("Fake rumours: ");
+		Debug.Log(xtraWho[0].desc);
+		Debug.Log(xtraWhat[0].desc);
+		Debug.Log(xtraWhere[0].desc);
+		Debug.Log(xtraWhen[0].desc);
 	
 
 		//24 cards in total
@@ -519,13 +559,41 @@ public class main: MonoBehaviour {
 		d2 = genFactHand(d2);
 		d2 = getRumourForHacker(d2);
 
+
 		for(int i = 0; i < 6; i++)
 		{
 			Debug.Log (d2.cards[i].desc + " type- "+ d1.cards[i].type);
 		}
 
+		deckOfCards = deckOfCards.resizeDeck();
 
-	//	num = resizeDeck(num);
+		Debug.Log ("new number deck");
+		for(int i = 0; i < deckOfCards.cards.Length; i++){
+			Debug.Log (deckOfCards.cards[i].desc+ " -"+deckOfCards.cards[i].type);
+		}
+
+		Debug.Log("");
+		d3 = d3.genRumourHand(deckOfCards);
+	Debug.Log ("D3's hand:");
+//
+		for(int i = 0; i < d3.cards.Length; i++){
+			Debug.Log (d3.cards[i].desc);
+		}
+
+		Debug.Log ("D4's hand:");
+
+	d4 = d4.genRumourHand (deckOfCards);
+		for(int i = 0; i < d4.cards.Length; i++){
+				Debug.Log (d4.cards[i].desc);
+			}
+
+
+//		Debug.Log ("new number deck");
+//		for(int i = 0; i < deckOfCards.cards.Length; i++){
+//			Debug.Log (deckOfCards.cards[i].desc);
+//		}
+//
+		//	num = resizeDeck(num);
 
 		//when d1-d4 were int []
 		/*
@@ -610,7 +678,6 @@ public class main: MonoBehaviour {
 		dummy.cards[1]= md.getCard(deckOfCards, whoC, whoFcard[0].type);
 		dummy.cards[2]= md.getCard(deckOfCards, whenC, whenFcard[0].type);
 		dummy.cards[3]= md.getCard(deckOfCards, whatC, whatFcard[0].type);
-		//dummy.addCard (md.getCard(deckOfCards, whoC));
 		return dummy;
 	}
 
