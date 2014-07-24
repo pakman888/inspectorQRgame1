@@ -7,7 +7,7 @@ public class Rumour : Card {
 	public bool lie;
 	public Rumour(){
 		truth = true;
-		lie = true;
+		lie = false;
 		type = 'r';
 	}
 }

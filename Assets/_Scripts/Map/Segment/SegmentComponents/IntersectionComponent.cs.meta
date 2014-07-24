@@ -1,0 +1,13 @@
+fileFormatVersion: 2
+guid: dc297345afa7d1f44af86bc1128a449b
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences:
+  - trafficLightController: {instanceID: 0}
+  - trafficLightPrefab3: {fileID: 100090, guid: 6705d80a72977f041b3eb48f54fefa1b,
+      type: 2}
+  - trafficLightPrefab2: {fileID: 100042, guid: a85fb9a0cfee4594da83eb93424a77f9,
+      type: 2}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 

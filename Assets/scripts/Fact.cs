@@ -8,7 +8,7 @@ public class Fact : Card {
 
 	public Fact(){
 		truth = true;
-		lie = true;
+		lie = false;
 		type = 'f';
 	}
 

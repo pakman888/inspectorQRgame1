@@ -49,11 +49,7 @@ public class Deck {
 		}
 		return i;
 	}
-
-
-
-
-
+	
 	public void rmvCard(int i){
 		cards[i] = null;
 	}
@@ -120,48 +116,6 @@ public class Deck {
 				}
 			}
 		}
-
-
-
-		//almost!!! it gets blown from null values...
-		/*
-		for(int i = 0; i < d.cards.Length;i++)
-		{
-			if( d.cards[i].desc != f[0].desc || d.cards[i].desc == null)//so far works
-			{
-				//Debug.Log (d.cards[i].desc);
-				index+=1;
-			}
-
-			if(d.cards[i].desc == f[0].desc)//so far works
-			{
-			//	Debug.Log ("good so far");
-				if(d.cards[i].type == f[0].type)
-				{
-			//		Debug.Log ("yeaaah");
-					i = d.cards.Length;
-				}
-				else
-				if(d.cards[i].type != f[0].type)
-				{
-				//	Debug.Log (d.cards[i].type);
-					index+=1;
-				}
-			}
-		}*/
-		//Debug.Log ("index : "+index); //searching needs to check for null cards. rest works
-
-	//	Debug.Log ("adding : "+d.cards[index].desc+" at index "+index);
-
-	//	c = d.cards[index];
-
-		
-	//	Debug.Log ("check removed card : "+d.cards[index].desc+" at index "+index);
-	//	d.cards[index] = null;
-	
-
-	//	Debug.Log (d.cards[index]);
-
 		if(t == 'f'){
 			c = new Fact();
 
@@ -193,14 +147,26 @@ public class Deck {
 		return rumour;
 	}
 
-	public Deck genRumourHand( Deck mainDeck){
+	public bool checkHandIsSet(Card[] d){
+		int notNull = 0;
+
+		for(int i = 0; i < d.Length; i++){
+			if(d[i].desc!= " "){
+				notNull +=1;
+			}
+		}
+
+		return (notNull == d.Length);
+	
+	}
+
+	//check point.
+
+	public void genRumourHand( Deck mainDeck){
 		bool repeated;
-		int size = (mainDeck.cards.Length+1) /2;
-		Deck arr = new Deck(size);
-		
 		
 		int mainDeckIndex = 0;
-		int arrIndex = 0;
+//		int arrIndex = 0;
 
 		for(mainDeckIndex = 0; mainDeckIndex < mainDeck.cards.Length; mainDeckIndex++){
 		
@@ -215,95 +181,50 @@ public class Deck {
 				{
 					repeated = false;
 					//Debug.Log(mainDeckIndex+ " !Empty");
-					for(arrIndex = 0; arrIndex < arr.cards.Length; arrIndex++) // go through player's hand
+					for(int arrIndex = 0; arrIndex < cards.Length; arrIndex++) // go through player's hand
 					{
 
-						if(arr.cards[arrIndex].desc!= " ")
+						if(cards[arrIndex].desc!= " ")
 						{
 						//	Debug.Log("arr- "+arrIndex+" not empty.");
-							if( arr.cards[arrIndex].desc == mainDeck.cards[mainDeckIndex].desc)
+							if( cards[arrIndex].desc == mainDeck.cards[mainDeckIndex].desc)
 							{
 								repeated = true;
 							}
 						}
 						else
-						if(arr.cards[arrIndex].desc==" ")
+						if(cards[arrIndex].desc==" ")
 						{
 						//	Debug.Log("arr- "+arrIndex+" is empty.");
 
 							if(repeated == true) // get out and move to next card
 							{
-								Debug.Log("mainDeck- "+mainDeck.cards[mainDeckIndex].desc+" is repeated ");
-								arrIndex = arr.cards.Length;
+							//	Debug.Log("mainDeck- "+mainDeck.cards[mainDeckIndex].desc+" is repeated ");
+								arrIndex = cards.Length;
 							}
 							else
-							if(repeated == false) // get out and move to next card
+								if(repeated == false) // get out and move to next card
 							{
-						//		Debug.Log("adding :  "+mainDeck.cards[mainDeckIndex].desc);
+		//						Debug.Log("adding :  "+mainDeck.cards[mainDeckIndex].desc);
 
-								arr.cards[arrIndex] = mainDeck.cards[mainDeckIndex];
+								cards[arrIndex] = mainDeck.cards[mainDeckIndex];
 								mainDeck.cards[mainDeckIndex] = null;
 								mainDeck.cards[mainDeckIndex] = new Card(); //removing card from main deck
-								arrIndex = arr.cards.Length;
+								arrIndex = cards.Length;
 							}
 						}
+						if(checkHandIsSet(cards) == true)
+						{
+							mainDeckIndex = mainDeck.cards.Length;
+						}
 					}
+
+
 				}
 			}
 
 		}
-
-
-
-
-
-///1 or two element is left in deck... SO CLOSE
-		 /*
-		while((mainDeckIndex < mainDeck.cards.Length) && (arrIndex < arr.cards.Length) )
-		{
-			if( (mainDeck.cards[mainDeckIndex].desc == arr.cards[arrIndex].desc) )
-			{
-				mainDeckIndex++;
-			}
-			else
-				if(mainDeck.cards[mainDeckIndex].desc != arr.cards[arrIndex].desc)
-			{
-				dIndex = 0;
-				repeated = false;
-				while( (dIndex < arr.cards.Length) && (arr.cards[dIndex].desc != " ") && repeated == false)
-				{
-					if(arr.cards[dIndex].desc!= mainDeck.cards[mainDeckIndex].desc)
-					{
-						dIndex++;
-
-					}
-					else
-						if(arr.cards[dIndex].desc== mainDeck.cards[mainDeckIndex].desc)
-					{
-						repeated = true;
-
-					}
-				}
-
-				if(repeated == false && mainDeck.cards[mainDeckIndex].desc != " " )
-				{
-					arr.cards[arrIndex] = mainDeck.cards[mainDeckIndex];
-					mainDeck.cards[mainDeckIndex] = null;
-					mainDeck.cards[mainDeckIndex] = new Card();
-					arrIndex++;
-					mainDeckIndex++;
-				}
-				else
-					if(repeated == true)
-				{
-					mainDeckIndex ++;
-				}
-			}
-
-		}
-		*/
-
-		return arr;
+	//return cards;
 	}
 
 /*
