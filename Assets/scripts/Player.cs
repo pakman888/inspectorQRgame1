@@ -6,7 +6,14 @@ public class Player : MonoBehaviour {
 	public string role;
 	public int dmg;
 	public int suspLvl;
-	public int maxSuspLvl;
+
+
+	// Use this for initialization
+	public Player() {
+		dmg = 0;
+		suspLvl = 0;
+		hand = new DeckHand();
+	}
 
 	public void setRole(string r){
 		role = r;
@@ -16,17 +23,16 @@ public class Player : MonoBehaviour {
 		dmg = d;
 	}
 
-	// Use this for initialization
-	void Start () {
-		suspLvl = 0;
-		maxSuspLvl = 10;
-		hand = new DeckHand();
+	public void receiveDmg(int d){
+		suspLvl+= d;
+	}
 
-	
+	public void receiveHeal(int h){
+
+		suspLvl -=h;
+		if(suspLvl < 0){
+			suspLvl = 0;
+		}
 	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+
 }
