@@ -15,7 +15,7 @@ public class gameManager : MonoBehaviour {
 
 
 	//the container to hold character select widget
-	public UIWidget uiw;
+	public UIWidget pcw;
 	//pickCharacter menu buttons
 	public UIButton btnTopL;
 	public UIButton btnTopR;
@@ -97,6 +97,8 @@ public class gameManager : MonoBehaviour {
 		btnStart.defaultColor = btnStart.disabledColor;
 		scw.alpha = 0.0f;
 		scw.enabled = false;
+		uhw.alpha = 0.0f;
+		uhw.enabled = false;
 
 		pickedAction = false;
 		disableScwBtns();
@@ -126,15 +128,20 @@ public class gameManager : MonoBehaviour {
 			}
 			
 
+			Debug.Log ("btnstartpicked is: "+btnStartPicked );
+			
 			if( (btnStartPicked == true) ) {
-				if(scw.alpha < 1 && uiw.alpha > 0.01f){	
-						uiw.alpha-=0.01f;
+				if(scw.alpha < 1 ){	
+					Debug.Log ("true");
+					pcw.alpha-=0.01f;
+
 				}
-				if(uiw.alpha < 0.01f && scw.alpha < 1 )
+
+				if(pcw.alpha <= 0.01f && scw.alpha < 1 && uhw.alpha < 1)
 				{
 					scw.alpha +=0.01f;
-
-					if(scw.alpha> 1)
+					uhw.alpha+= 0.01f;
+					if(scw.alpha> 1 && uhw.alpha > 1)
 					{
 						roundBegins = true;
 						charSelect = false;
@@ -147,6 +154,7 @@ public class gameManager : MonoBehaviour {
 		{
 			enableScwBtns();
 			scw.enabled = true;
+			uhw.enabled = true;
 			if(count == 0){
 				Debug.Log ("Player 1's turn");
 			}
@@ -422,6 +430,25 @@ public class gameManager : MonoBehaviour {
 	public void calcNewSuspicionPt(Player p, int index){ //reduce points
 	}
 
+	
+	public void clickStart(){
+		Debug.Log ("starting game.");
+		btnStartPicked = true;
+		
+		users[0].setRole(p1);
+		users[1].setRole (p2);
+		users[2].setRole(p3);
+		users[3].setRole (p4);
+		
+		for(int i = 0; i < users.Length; i++){
+			Debug.Log (users[i].role);
+		}
+		
+		count = 0;
+		pcw.enabled = false;
+		
+	}
+
 	public void ClickProfile1(){
 
 		if( btnTopLPicked == false)
@@ -538,23 +565,6 @@ public class gameManager : MonoBehaviour {
 	}
 
 
-	public void clickStart(){
-		Debug.Log ("starting game.");
-		btnStartPicked = true;
-
-		users[0].setRole(p1);
-		users[1].setRole (p2);
-		users[2].setRole(p3);
-		users[3].setRole (p4);
-
-		for(int i = 0; i < users.Length; i++){
-			Debug.Log (users[i].role);
-		}
-
-		count = 0;
-		uiw.enabled = false;
-
-	}
 
 	public void ClickProfile4(){
 
