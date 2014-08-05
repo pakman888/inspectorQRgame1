@@ -12,7 +12,7 @@ public class gameManager : MonoBehaviour {
 	//round number
 	int round;
 	int maxRound;
-
+	int turn;
 
 	//the container to hold character select widget
 	public UIWidget pcw;
@@ -21,6 +21,7 @@ public class gameManager : MonoBehaviour {
 	public UIButton btnTopR;
 	public UIButton btnBotL;
 	public UIButton btnBotR;
+	public UIButton btnMid;
 	public UIButton btnStart;
 
 
@@ -28,7 +29,9 @@ public class gameManager : MonoBehaviour {
 	bool btnTopRPicked;
 	bool btnBotLPicked;
 	bool btnBotRPicked;
+	bool btnMidPicked;
 	bool btnStartPicked;
+
 	bool uiwIsInvis;
 	//counter to make sure btnstart can be enabled
 	int count;
@@ -36,12 +39,21 @@ public class gameManager : MonoBehaviour {
 	public string p2;
 	public string p3;
 	public string p4;
-	int []ppl;//used to assign single/multiple targets. clears when new round happens.
+	public string p5;
+	int [,]ppl;//used to assign single/multiple targets. clears when new round happens.
+	//int [] ppl;
+
 	Color dummy;
 
-	//manages suspicionchart widget
+	//manages suspicion chart widget
 	public UIWidget scw; //contains user info with hp bar
 	public UIWidget uhw;
+	public UIButton btnP1;
+	public UIButton btnP2;
+	public UIButton btnP3;
+	public UIButton btnP4;
+	public UIButton btnP5;
+
 	//game round values
 	public bool pickedAction;
 	public int actIndex; 
@@ -53,31 +65,34 @@ public class gameManager : MonoBehaviour {
 	public UIButton ac3;
 	public UIButton ac4;
 	public UIButton ac5;
-	public UIButton ac6;
-	public UIButton ac7;
-	public UIButton ac8;
-	public UIButton ac9;
 
-	public UIButton ac10;
-	public UIButton ac11;
-	public UIButton ac12;
-	public UIButton ac13;
-	public UIButton ac14;
-	public UIButton ac15;
-	public UIButton ac16;
-	public UIButton ac17;
-	public UIButton ac18;
-	public UIButton ac19;
+	public bool singleTarget;
+	public int singleTargetVictim;
 
+	public bool stackDmg;
+	public bool dmgAll;
+
+	public bool ac0picked;
+	public bool ac1picked;
+	public bool ac2picked;
+	public bool ac3picked;
+	public bool ac4picked;
+	public bool ac5picked;
 
 	// Use this for initialization
 	void Start () {
-		ppl = new int[users.Length];
+		singleTargetVictim = -1;
+		singleTarget = false;
+		stackDmg = false;
+		dmgAll = false;
 
 		actIndex = -1;
 		round = 0;
 		maxRound = 10;
-		users = new Player[4];
+		turn = 0;
+		users = new Player[5];
+		ppl = new int[users.Length,1];
+		//ppl = new int[users.Length];
 		for(int i = 0; i < users.Length; i++){
 			users[i] = new Player();
 		}
@@ -106,9 +121,16 @@ public class gameManager : MonoBehaviour {
 		p2 = " ";
 		p3 = " ";
 		p4 = " ";
+		p5 = " ";
 		count = 0;
-	//	_sprite = _buttonStart.GetComponentInChildren();
-	//	_sprite.enabled = !_spire.enabled;
+
+		ac0picked = false;
+		ac1picked = false;
+		ac2picked = false;
+		ac3picked = false;
+		ac4picked = false;
+		ac5picked = false;
+	
 	}
 	
 	// Update is called once per frame
@@ -116,12 +138,12 @@ public class gameManager : MonoBehaviour {
 
 		if(charSelect == true)
 		{
-			if(count< 4)
+			if(count< 5)
 			{
 				btnStart.defaultColor = btnStart.disabledColor;
 			}
 			else
-			if(count>= 4)
+			if(count>= 5)
 			{
 				btnStart.defaultColor = dummy;
 				btnStart.enabled = true;
@@ -145,6 +167,9 @@ public class gameManager : MonoBehaviour {
 					{
 						roundBegins = true;
 						charSelect = false;
+						enableScwBtns();
+						scw.enabled = true;
+						uhw.enabled = true;
 					}
 				}
 			}
@@ -152,28 +177,77 @@ public class gameManager : MonoBehaviour {
 
 		if(roundBegins == true)
 		{
-			enableScwBtns();
-			scw.enabled = true;
-			uhw.enabled = true;
-			if(count == 0){
-				Debug.Log ("Player 1's turn");
-			}
+				if(round < maxRound){
+				 GameObject.Find("roundIndicator").GetComponent<UILabel>().text = "Round "+ round;
+				if(turn <5){
 
-			if(count == 1){
-				Debug.Log ("Player 2's turn");
-			}
+					if(turn == 0){
+						GameObject.Find("turnIndicator").GetComponent<UILabel>().text = "Player 1's turn";
+						disableButton(btnP1);
 
-			if(count ==2){
-				Debug.Log ("Player 3's turn");
-			}
-			
-			if(count ==3){
-				Debug.Log ("Player 4's turn");
-			}
+					}
 
+					if(turn == 1){
+						GameObject.Find("turnIndicator").GetComponent<UILabel>().text = "Player 2's turn";
+						enableButton(btnP1);
+						disableButton(btnP2);
+					}
+
+					if(turn ==2){
+						GameObject.Find("turnIndicator").GetComponent<UILabel>().text = "Player 3's turn";
+
+						enableButton(btnP2);
+						disableButton(btnP3);
+					}
+					
+					if(turn ==3){
+						GameObject.Find("turnIndicator").GetComponent<UILabel>().text = "Player 4's turn";
+
+						enableButton(btnP3);
+						disableButton(btnP4);
+					}
+
+					if(turn ==4){
+						GameObject.Find("turnIndicator").GetComponent<UILabel>().text = "Player 5's turn";
+
+						enableButton(btnP4);
+						disableButton(btnP5);
+					}
+				}
+				else
+					if(turn ==5){
+					enableButton(btnP5);
+					turn = 0;
+					combatPhase();
+					round++;
+				}
+			}
+			else
+				if(round>= maxRound){
+				roundBegins = false;
+			}
+		}
+		else
+		if(roundBegins == false)
+		{
+			Debug.Log("end of game");
 		}
 	}
 
+	public void disableButton(UIButton btn)
+	{
+
+		dummy = btn.defaultColor;
+		btn.defaultColor = btnStart.disabledColor;
+		btn.enabled = false;
+
+	}
+
+	public void enableButton(UIButton btn){
+		btn.defaultColor = Color.white;
+		btn.enabled = true;
+
+	}
 
 	public void disableScwBtns(){
 	
@@ -183,21 +257,9 @@ public class gameManager : MonoBehaviour {
 		ac3.enabled = false;
 		ac4.enabled = false;
 		ac5.enabled = false;
-		ac6.enabled = false;
-		ac7.enabled = false;
-		ac8.enabled = false;
-		ac9.enabled = false;
-		ac10.enabled = false;
-		ac10.enabled = false;
-		ac12.enabled = false;
-		ac13.enabled = false;
-		ac14.enabled = false;
-		ac15.enabled = false;
-		ac16.enabled = false;
-		ac17.enabled = false;
-		ac18.enabled = false;
-		ac19.enabled = false;
+
 	}
+
 
 	public void enableScwBtns(){
 		
@@ -207,21 +269,17 @@ public class gameManager : MonoBehaviour {
 		ac3.enabled = true;
 		ac4.enabled = true;
 		ac5.enabled = true;
-		ac6.enabled = true;
-		ac7.enabled = true;
-		ac8.enabled = true;
-		ac9.enabled = true;
-		ac10.enabled = true;
-		ac10.enabled = true;
-		ac12.enabled = true;
-		ac13.enabled = true;
-		ac14.enabled = true;
-		ac15.enabled = true;
-		ac16.enabled = true;
-		ac17.enabled = true;
-		ac18.enabled = true;
-		ac19.enabled = true;
+	
 	}
+
+	public void checkacArrelectUserDisable(){
+
+	}
+
+	public void showCardAction(){
+
+	}
+
 
 	//functions for the action card buttons
 	//each action should reveal if it targets other people or self target
@@ -232,199 +290,836 @@ public class gameManager : MonoBehaviour {
 	//if target everyone, every1 except user gets a border.
 
 	public void clickConfirm(){
+		//users[count].atkUserIndex = 
+		Debug.Log("player " + turn+" is locking in action - "+actIndex);
+		ppl[turn,0] = actIndex;
+
+		if(singleTarget == true)
+		{
+			users[turn].atkUserIndex = singleTargetVictim;
+		}
+
+		resetTargetColor();
+		turn++;
+	}
+
+	void resetActionCardIndex(){
+	
+		ac0picked = false;
+		ac1picked = false;
+		ac2picked = false;
+		ac3picked = false;
+		ac4picked = false;
+		ac5picked = false;
+	}
+
+	void resetActionCardColor(){
+		Debug.Log("reset colour");
+		GameObject.Find ("btn0").GetComponent<UIButton>().defaultColor=  Color.white;
+		GameObject.Find ("btn10").GetComponent<UIButton>().defaultColor=  Color.white;
+		GameObject.Find ("btn20").GetComponent<UIButton>().defaultColor=  Color.white;
+		GameObject.Find ("btn30").GetComponent<UIButton>().defaultColor=  Color.white;
+		GameObject.Find ("btn40").GetComponent<UIButton>().defaultColor=  Color.white;
+		GameObject.Find ("btn50").GetComponent<UIButton>().defaultColor=  Color.white;
+	}
+
+	void resetTargetColor(){
+		Debug.Log("reset target colour");
+		singleTarget = true;
+
+			if(turn == 0){
+				GameObject.Find ("playerSelect2").GetComponent<UIButton>().defaultColor= Color.white;
+			GameObject.Find ("playerSelect2").GetComponent<UIButton>().UpdateColor(true,true);
+
+			GameObject.Find ("playerSelect3").GetComponent<UIButton>().defaultColor= Color.white;
+			GameObject.Find ("playerSelect3").GetComponent<UIButton>().UpdateColor(true,true);
+
+				GameObject.Find ("playerSelect4").GetComponent<UIButton>().defaultColor= Color.white;
+			GameObject.Find ("playerSelect4").GetComponent<UIButton>().UpdateColor(true,true);
+
+				GameObject.Find ("playerSelect5").GetComponent<UIButton>().defaultColor= Color.white;
+			GameObject.Find ("playerSelect5").GetComponent<UIButton>().UpdateColor(true,true);
+
+			}
+			
+			if(turn == 1){
+				GameObject.Find ("playerSelect1").GetComponent<UIButton>().defaultColor= Color.white;
+			GameObject.Find ("playerSelect1").GetComponent<UIButton>().UpdateColor(true,true);
+
+				GameObject.Find ("playerSelect3").GetComponent<UIButton>().defaultColor= Color.white;
+			GameObject.Find ("playerSelect3").GetComponent<UIButton>().UpdateColor(true,true);
+
+				GameObject.Find ("playerSelect4").GetComponent<UIButton>().defaultColor= Color.white;
+			GameObject.Find ("playerSelect4").GetComponent<UIButton>().UpdateColor(true,true);
+
+				GameObject.Find ("playerSelect5").GetComponent<UIButton>().defaultColor= Color.white;
+			GameObject.Find ("playerSelect5").GetComponent<UIButton>().UpdateColor(true,true);
+
+			}
+			
+			if(turn == 2){
+				GameObject.Find ("playerSelect1").GetComponent<UIButton>().defaultColor= Color.white;
+			GameObject.Find ("playerSelect1").GetComponent<UIButton>().UpdateColor(true,true);
+
+				GameObject.Find ("playerSelect2").GetComponent<UIButton>().defaultColor= Color.white;
+			GameObject.Find ("playerSelect2").GetComponent<UIButton>().UpdateColor(true,true);
+
+				GameObject.Find ("playerSelect4").GetComponent<UIButton>().defaultColor= Color.white;
+			GameObject.Find ("playerSelect4").GetComponent<UIButton>().UpdateColor(true,true);
+
+				GameObject.Find ("playerSelect5").GetComponent<UIButton>().defaultColor	= Color.white;
+			GameObject.Find ("playerSelect5").GetComponent<UIButton>().UpdateColor(true,true);
+
+			}
+			
+			if(turn == 3){
+				GameObject.Find ("playerSelect1").GetComponent<UIButton>().defaultColor= Color.white;
+			GameObject.Find ("playerSelect1").GetComponent<UIButton>().UpdateColor(true,true);
+
+				GameObject.Find ("playerSelect2").GetComponent<UIButton>().defaultColor= Color.white;
+			GameObject.Find ("playerSelect2").GetComponent<UIButton>().UpdateColor(true,true);
+
+				GameObject.Find ("playerSelect3").GetComponent<UIButton>().defaultColor= Color.white;
+			GameObject.Find ("playerSelect3").GetComponent<UIButton>().UpdateColor(true,true);
+
+				GameObject.Find ("playerSelect5").GetComponent<UIButton>().defaultColor= Color.white;
+			GameObject.Find ("playerSelect5").GetComponent<UIButton>().UpdateColor(true,true);
+
+			}
+			if(turn == 4){
+				GameObject.Find ("playerSelect1").GetComponent<UIButton>().defaultColor= Color.white;
+			GameObject.Find ("playerSelect1").GetComponent<UIButton>().UpdateColor(true,true);
+
+				GameObject.Find ("playerSelect2").GetComponent<UIButton>().defaultColor= Color.white;
+			GameObject.Find ("playerSelect2").GetComponent<UIButton>().UpdateColor(true,true);
+
+				GameObject.Find ("playerSelect3").GetComponent<UIButton>().defaultColor= Color.white;
+			GameObject.Find ("playerSelect3").GetComponent<UIButton>().UpdateColor(true,true);
+
+			GameObject.Find ("playerSelect4").GetComponent<UIButton>().defaultColor= Color.white;
+			GameObject.Find ("playerSelect4").GetComponent<UIButton>().UpdateColor(true,true);
+
+			}
+		
+
+	
+	}
+
+
+	public void selectSingleUser(){
+	
+		singleTarget = true;
+		if(users[turn].hand.acArr[actIndex].isAllegation())
+		{
+			Debug.Log("Allegation targetting");
+			resetTargetColor();
+			if(turn == 0){
+
+					
+				GameObject.Find ("playerSelect2").GetComponent<UIButton>().hover = Color.red;
+				GameObject.Find ("playerSelect2").GetComponent<UIButton>().pressed= Color.red;
+
+				GameObject.Find ("playerSelect3").GetComponent<UIButton>().hover = Color.red;
+					GameObject.Find ("playerSelect3").GetComponent<UIButton>().pressed= Color.red;
+
+				GameObject.Find ("playerSelect4").GetComponent<UIButton>().hover = Color.red;
+					GameObject.Find ("playerSelect4").GetComponent<UIButton>().pressed= Color.red;
+
+				GameObject.Find ("playerSelect5").GetComponent<UIButton>().hover = Color.red;
+					GameObject.Find ("playerSelect5").GetComponent<UIButton>().pressed= Color.red;
+
+			}
+
+			if(turn == 1){
+					
+				GameObject.Find ("playerSelect1").GetComponent<UIButton>().hover = Color.red;
+					GameObject.Find ("playerSelect1").GetComponent<UIButton>().pressed= Color.red;
+				
+				GameObject.Find ("playerSelect3").GetComponent<UIButton>().hover = Color.red;
+					GameObject.Find ("playerSelect3").GetComponent<UIButton>().pressed= Color.red;
+				
+				GameObject.Find ("playerSelect4").GetComponent<UIButton>().hover = Color.red;
+					GameObject.Find ("playerSelect4").GetComponent<UIButton>().pressed= Color.red;
+				
+				GameObject.Find ("playerSelect5").GetComponent<UIButton>().hover = Color.red;
+					GameObject.Find ("playerSelect5").GetComponent<UIButton>().pressed= Color.red;
+				
+			}
+
+			if(turn == 2){
+					
+				GameObject.Find ("playerSelect1").GetComponent<UIButton>().hover = Color.red;
+				GameObject.Find ("playerSelect1").GetComponent<UIButton>().pressed= Color.red;
+				
+				GameObject.Find ("playerSelect2").GetComponent<UIButton>().hover = Color.red;
+				GameObject.Find ("playerSelect2").GetComponent<UIButton>().pressed= Color.red;
+				
+				GameObject.Find ("playerSelect4").GetComponent<UIButton>().hover = Color.red;
+				GameObject.Find ("playerSelect4").GetComponent<UIButton>().pressed= Color.red;
+				
+				GameObject.Find ("playerSelect5").GetComponent<UIButton>().hover = Color.red;
+				GameObject.Find ("playerSelect5").GetComponent<UIButton>().pressed= Color.red;
+				
+			}
+
+			if(turn == 3){
+					
+				GameObject.Find ("playerSelect1").GetComponent<UIButton>().hover = Color.red;
+				GameObject.Find ("playerSelect1").GetComponent<UIButton>().pressed= Color.red;
+				
+				GameObject.Find ("playerSelect2").GetComponent<UIButton>().hover = Color.red;
+				GameObject.Find ("playerSelect2").GetComponent<UIButton>().pressed= Color.red;
+				
+				GameObject.Find ("playerSelect3").GetComponent<UIButton>().hover = Color.red;
+				GameObject.Find ("playerSelect3").GetComponent<UIButton>().pressed= Color.red;
+				
+				GameObject.Find ("playerSelect5").GetComponent<UIButton>().hover = Color.red;
+				GameObject.Find ("playerSelect5").GetComponent<UIButton>().pressed= Color.red;
+				
+			}
+			if(turn == 4){
+					
+				GameObject.Find ("playerSelect1").GetComponent<UIButton>().hover = Color.red;
+				GameObject.Find ("playerSelect1").GetComponent<UIButton>().pressed= Color.red;
+				
+				GameObject.Find ("playerSelect2").GetComponent<UIButton>().hover = Color.red;
+				GameObject.Find ("playerSelect2").GetComponent<UIButton>().pressed= Color.red;
+				
+				GameObject.Find ("playerSelect3").GetComponent<UIButton>().hover = Color.red;
+				GameObject.Find ("playerSelect3").GetComponent<UIButton>().pressed= Color.red;
+				
+				GameObject.Find ("playerSelect4").GetComponent<UIButton>().hover = Color.red;
+				GameObject.Find ("playerSelect4").GetComponent<UIButton>().pressed= Color.red;
+				
+			}
+		}
+
+		if(users[turn].hand.acArr[actIndex].isTaunt())
+		{
+			resetTargetColor();
+			if(turn == 0){
+
+				GameObject.Find ("playerSelect2").GetComponent<UIButton>().hover = new Color(255F, 255F, 0.0F, 255F);
+				GameObject.Find ("playerSelect2").GetComponent<UIButton>().pressed= Color.red;
+				
+				GameObject.Find ("playerSelect3").GetComponent<UIButton>().hover = new Color(255F, 255F, 0.0F, 255F);
+				GameObject.Find ("playerSelect3").GetComponent<UIButton>().pressed= Color.red;
+				
+				GameObject.Find ("playerSelect4").GetComponent<UIButton>().hover = new Color(255F, 255F, 0.0F, 255F);
+				GameObject.Find ("playerSelect4").GetComponent<UIButton>().pressed= Color.red;
+				
+				GameObject.Find ("playerSelect5").GetComponent<UIButton>().hover = new Color(255F, 255F, 0.0F, 255F);
+				GameObject.Find ("playerSelect5").GetComponent<UIButton>().pressed= Color.red;
+				
+			}
+			
+			if(turn == 1){
+
+				GameObject.Find ("playerSelect1").GetComponent<UIButton>().hover = new Color(255F, 255F, 0.0F, 255F);
+				GameObject.Find ("playerSelect1").GetComponent<UIButton>().pressed= Color.red;
+				
+				GameObject.Find ("playerSelect3").GetComponent<UIButton>().hover = new Color(255F, 255F, 0.0F, 255F);
+				GameObject.Find ("playerSelect3").GetComponent<UIButton>().pressed= Color.red;
+				
+				GameObject.Find ("playerSelect4").GetComponent<UIButton>().hover = new Color(255F, 255F, 0.0F, 255F);
+				GameObject.Find ("playerSelect4").GetComponent<UIButton>().pressed= Color.red;
+				
+				GameObject.Find ("playerSelect5").GetComponent<UIButton>().hover = new Color(255F, 255F, 0.0F, 255F);
+				GameObject.Find ("playerSelect5").GetComponent<UIButton>().pressed= Color.red;
+				
+			}
+			
+			if(turn == 2){
+			
+				GameObject.Find ("playerSelect1").GetComponent<UIButton>().hover = new Color(255F, 255F, 0.0F, 255F);
+				GameObject.Find ("playerSelect1").GetComponent<UIButton>().pressed= Color.red;
+				
+				GameObject.Find ("playerSelect2").GetComponent<UIButton>().hover = new Color(255F, 255F, 0.0F, 255F);
+				GameObject.Find ("playerSelect2").GetComponent<UIButton>().pressed= Color.red;
+				
+				GameObject.Find ("playerSelect4").GetComponent<UIButton>().hover = new Color(255F, 255F, 0.0F, 255F);
+				GameObject.Find ("playerSelect4").GetComponent<UIButton>().pressed= Color.red;
+				
+				GameObject.Find ("playerSelect5").GetComponent<UIButton>().hover = new Color(255F, 255F, 0.0F, 255F);
+				GameObject.Find ("playerSelect5").GetComponent<UIButton>().pressed= Color.red;
+				
+			}
+			
+			if(turn == 3){
+
+				GameObject.Find ("playerSelect1").GetComponent<UIButton>().hover = new Color(255F, 255F, 0.0F, 255F);
+				GameObject.Find ("playerSelect1").GetComponent<UIButton>().pressed= Color.red;
+				
+				GameObject.Find ("playerSelect2").GetComponent<UIButton>().hover = new Color(255F, 255F, 0.0F, 255F);
+				GameObject.Find ("playerSelect2").GetComponent<UIButton>().pressed= Color.red;
+				
+				GameObject.Find ("playerSelect3").GetComponent<UIButton>().hover = new Color(255F, 255F, 0.0F, 255F);
+				GameObject.Find ("playerSelect3").GetComponent<UIButton>().pressed= Color.red;
+				
+				GameObject.Find ("playerSelect5").GetComponent<UIButton>().hover = new Color(255F, 255F, 0.0F, 255F);
+				GameObject.Find ("playerSelect5").GetComponent<UIButton>().pressed= Color.red;
+				
+			}
+			if(turn == 4){
+
+				GameObject.Find ("playerSelect1").GetComponent<UIButton>().hover = new Color(255F, 255F, 0.0F, 255F);
+				GameObject.Find ("playerSelect1").GetComponent<UIButton>().pressed= Color.red;
+				
+				GameObject.Find ("playerSelect2").GetComponent<UIButton>().hover = new Color(255F, 255F, 0.0F, 255F);
+				GameObject.Find ("playerSelect2").GetComponent<UIButton>().pressed= Color.red;
+				
+				GameObject.Find ("playerSelect3").GetComponent<UIButton>().hover = new Color(255F, 255F, 0.0F, 255F);
+				GameObject.Find ("playerSelect3").GetComponent<UIButton>().pressed= Color.red;
+				
+				GameObject.Find ("playerSelect4").GetComponent<UIButton>().hover = new Color(255F, 255F, 0.0F, 255F);
+				GameObject.Find ("playerSelect4").GetComponent<UIButton>().pressed= Color.red;
+				
+			}
+		}
+
+		if(users[turn].hand.acArr[actIndex].isBlame())
+		{
+			resetTargetColor();
+			if(turn == 0){
+				
+				GameObject.Find ("playerSelect2").GetComponent<UIButton>().hover = new Color(255,129,0,255);
+				GameObject.Find ("playerSelect2").GetComponent<UIButton>().pressed= Color.red;
+				
+				GameObject.Find ("playerSelect3").GetComponent<UIButton>().hover = new Color(255,129,0,255);
+				GameObject.Find ("playerSelect3").GetComponent<UIButton>().pressed= Color.red;
+				
+				GameObject.Find ("playerSelect4").GetComponent<UIButton>().hover =new Color(255,129,0,255);
+				GameObject.Find ("playerSelect4").GetComponent<UIButton>().pressed= Color.red;
+				
+				GameObject.Find ("playerSelect5").GetComponent<UIButton>().hover = new Color(255,129,0,255);
+				GameObject.Find ("playerSelect5").GetComponent<UIButton>().pressed= Color.red;
+				
+			}
+			
+			if(turn == 1){
+				
+				GameObject.Find ("playerSelect1").GetComponent<UIButton>().hover = new Color(255,129,0,255);
+				GameObject.Find ("playerSelect1").GetComponent<UIButton>().pressed= Color.red;
+				
+				GameObject.Find ("playerSelect3").GetComponent<UIButton>().hover = new Color(255,129,0,255);
+				GameObject.Find ("playerSelect3").GetComponent<UIButton>().pressed= Color.red;
+				
+				GameObject.Find ("playerSelect4").GetComponent<UIButton>().hover = new Color(255,129,0,255);
+				GameObject.Find ("playerSelect4").GetComponent<UIButton>().pressed= Color.red;
+				
+				GameObject.Find ("playerSelect5").GetComponent<UIButton>().hover = new Color(255,129,0,255);
+				GameObject.Find ("playerSelect5").GetComponent<UIButton>().pressed= Color.red;
+				
+			}
+			
+			if(turn == 2){
+				
+				GameObject.Find ("playerSelect1").GetComponent<UIButton>().hover = new Color(255,129,0,255);
+				GameObject.Find ("playerSelect1").GetComponent<UIButton>().pressed= Color.red;
+				
+				GameObject.Find ("playerSelect2").GetComponent<UIButton>().hover = new Color(255,129,0,255);
+				GameObject.Find ("playerSelect2").GetComponent<UIButton>().pressed= Color.red;
+				
+				GameObject.Find ("playerSelect4").GetComponent<UIButton>().hover = new Color(255,129,0,255);
+				GameObject.Find ("playerSelect4").GetComponent<UIButton>().pressed= Color.red;
+				
+				GameObject.Find ("playerSelect5").GetComponent<UIButton>().hover = new Color(255,129,0,255);
+				GameObject.Find ("playerSelect5").GetComponent<UIButton>().pressed= Color.red;
+				
+			}
+			
+			if(turn == 3){
+				
+				GameObject.Find ("playerSelect1").GetComponent<UIButton>().hover = new Color(255,129,0,255);
+				GameObject.Find ("playerSelect1").GetComponent<UIButton>().pressed= Color.red;
+				
+				GameObject.Find ("playerSelect2").GetComponent<UIButton>().hover = new Color(255,129,0,255);
+				GameObject.Find ("playerSelect2").GetComponent<UIButton>().pressed= Color.red;
+				
+				GameObject.Find ("playerSelect3").GetComponent<UIButton>().hover = new Color(255,129,0,255);
+				GameObject.Find ("playerSelect3").GetComponent<UIButton>().pressed= Color.red;
+				
+				GameObject.Find ("playerSelect5").GetComponent<UIButton>().hover = new Color(255,129,0,255);
+				GameObject.Find ("playerSelect5").GetComponent<UIButton>().pressed= Color.red;
+				
+			}
+			if(turn == 4){
+				
+				GameObject.Find ("playerSelect1").GetComponent<UIButton>().hover = new Color(255,129,0,255);
+				GameObject.Find ("playerSelect1").GetComponent<UIButton>().pressed= Color.red;
+				
+				GameObject.Find ("playerSelect2").GetComponent<UIButton>().hover = new Color(255,129,0,255);
+				GameObject.Find ("playerSelect2").GetComponent<UIButton>().pressed= Color.red;
+				
+				GameObject.Find ("playerSelect3").GetComponent<UIButton>().hover = new Color(255,129,0,255);
+				GameObject.Find ("playerSelect3").GetComponent<UIButton>().pressed= Color.red;
+				
+				GameObject.Find ("playerSelect4").GetComponent<UIButton>().hover = new Color(255,129,0,255);
+				GameObject.Find ("playerSelect4").GetComponent<UIButton>().pressed= Color.red;
+				
+			}
+		}
+
+	}
+
+
+	public void snitchAll(){
+
+		singleTarget= false;
+		if(users[turn].hand.acArr[actIndex].isSnitch())
+		{
+			resetTargetColor();
+			if(turn == 0){
+				Debug.Log("p2,p3,p4,p5 will be damaged from snitch");
+				GameObject.Find ("playerSelect2").GetComponent<UIButton>().defaultColor= Color.red;
+					GameObject.Find("playerSelect2").GetComponent<UIButton>().UpdateColor(true,true);
+				GameObject.Find ("playerSelect3").GetComponent<UIButton>().defaultColor= Color.red;
+					GameObject.Find("playerSelect3").GetComponent<UIButton>().UpdateColor(true,true);
+				GameObject.Find ("playerSelect4").GetComponent<UIButton>().defaultColor= Color.red;
+					GameObject.Find("playerSelect4").GetComponent<UIButton>().UpdateColor(true,true);
+				GameObject.Find ("playerSelect5").GetComponent<UIButton>().defaultColor= Color.red;
+					GameObject.Find("playerSelect5").GetComponent<UIButton>().UpdateColor(true,true);
+			}
+
+			if(turn ==1)
+				Debug.Log("p1,p3,p4,p5 will be damaged from snitch");
+			{
+				GameObject.Find ("playerSelect1").GetComponent<UIButton>().defaultColor= Color.red;
+					GameObject.Find("playerSelect1").GetComponent<UIButton>().UpdateColor(true,true);
+				GameObject.Find ("playerSelect3").GetComponent<UIButton>().defaultColor= Color.red;
+					GameObject.Find("playerSelect3").GetComponent<UIButton>().UpdateColor(true,true);
+				GameObject.Find ("playerSelect4").GetComponent<UIButton>().defaultColor= Color.red;
+					GameObject.Find("playerSelect4").GetComponent<UIButton>().UpdateColor(true,true);
+				GameObject.Find ("playerSelect5").GetComponent<UIButton>().defaultColor= Color.red;
+					GameObject.Find("playerSelect5").GetComponent<UIButton>().UpdateColor(true,true);
+			}
+
+			if(turn == 2){
+				Debug.Log("p1,p2,p4,p5 will be damaged from snitch");
+				GameObject.Find ("playerSelect1").GetComponent<UIButton>().defaultColor= Color.red;
+					GameObject.Find("playerSelect1").GetComponent<UIButton>().UpdateColor(true,true);
+				GameObject.Find ("playerSelect2").GetComponent<UIButton>().defaultColor= Color.red;
+					GameObject.Find("playerSelect2").GetComponent<UIButton>().UpdateColor(true,true);
+				GameObject.Find ("playerSelect4").GetComponent<UIButton>().defaultColor= Color.red;
+					GameObject.Find("playerSelect4").GetComponent<UIButton>().UpdateColor(true,true);
+				GameObject.Find ("playerSelect5").GetComponent<UIButton>().defaultColor= Color.red;
+					GameObject.Find("playerSelect5").GetComponent<UIButton>().UpdateColor(true,true);
+			}
+
+			if(turn == 3){
+				Debug.Log("p1,p2,p3,p5 will be damaged from snitch");
+				GameObject.Find ("playerSelect1").GetComponent<UIButton>().defaultColor= Color.red;
+					GameObject.Find("playerSelect1").GetComponent<UIButton>().UpdateColor(true,true);
+				GameObject.Find ("playerSelect2").GetComponent<UIButton>().defaultColor= Color.red;
+					GameObject.Find("playerSelect2").GetComponent<UIButton>().UpdateColor(true,true);
+				GameObject.Find ("playerSelect3").GetComponent<UIButton>().defaultColor= Color.red;
+					GameObject.Find("playerSelect3").GetComponent<UIButton>().UpdateColor(true,true);
+				GameObject.Find ("playerSelect5").GetComponent<UIButton>().defaultColor= Color.red;
+			}
+
+			if(turn == 4){Debug.Log("p1,p2,p3,p4 will be damaged from snitch");
+				GameObject.Find ("playerSelect1").GetComponent<UIButton>().defaultColor= Color.red;
+					GameObject.Find("playerSelect1").GetComponent<UIButton>().UpdateColor(true,true);
+				GameObject.Find ("playerSelect2").GetComponent<UIButton>().defaultColor= Color.red;
+					GameObject.Find("playerSelect2").GetComponent<UIButton>().UpdateColor(true,true);
+				GameObject.Find ("playerSelect3").GetComponent<UIButton>().defaultColor= Color.red;
+					GameObject.Find("playerSelect3").GetComponent<UIButton>().UpdateColor(true,true);
+				GameObject.Find ("playerSelect4").GetComponent<UIButton>().defaultColor= Color.red;
+					GameObject.Find("playerSelect4").GetComponent<UIButton>().UpdateColor(true,true);
+			}
+		}
+	}
+
+	public void blameTarget(){
+		singleTarget = true;
+
+	}
+
+	public void healUser(){
+		singleTarget = false;
+	}
+
+	public void blockUser(){
+		singleTarget = false;
+	}
+
+	public void checkTargetUsers(int act){
+
+		if(users[turn].hand.acArr[act].isAllegation() == true)
+		{
+			selectSingleUser();
+		}
+
+		if(users[turn].hand.acArr[act].isTaunt ()== true)
+		{
+			Debug.Log("Taunt");
+			selectSingleUser();
+		}
+
+		if(users[turn].hand.acArr[act].isSnitch() == true)
+		{
+			Debug.Log("Snitch");
+			snitchAll();
+		}
+
+		if(users[turn].hand.acArr[act].isBlame () == true)
+		{
+			Debug.Log("Blame");
+			blameTarget();
+		}
+
+		if(users[turn].hand.acArr[act].isHeal == true)
+		{	
+			Debug.Log("Heal");
+			healUser();
+		}
+		if(users[turn].hand.acArr[act].isBlock == true){
+			Debug.Log("Block");
+			blockUser();
+		}
 
 
 	}
 
 
-	public void pickAction0(){
-		if(pickedAction==false)
+	public void clickTarget0(){
+	
+		if(turn!= 0)
 		{
+			if(singleTarget== true)
+			{
+				singleTargetVictim = 0;
+				resetTargetColor();
+				users[turn].atkUserIndex = int.Parse (GameObject.Find("playerSelect1").GetComponentInChildren<UILabel>().text);
+				Debug.Log("Player "+ turn+ "will strike player : "+int.Parse (GameObject.Find("playerSelect1").GetComponentInChildren<UILabel>().text));
+				GameObject.Find ("playerSelect1").GetComponent<UIButton>().defaultColor= Color.red;
+				GameObject.Find("playerSelect1").GetComponent<UIButton>().UpdateColor(true,true);
+			}
 
+
+		}
+	}
+
+	public void clickTarget1(){
+		
+		if(turn != 1)
+		{
+			if(singleTarget== true)
+			{
+				singleTargetVictim = 1;
+				resetTargetColor();
+				users[turn].atkUserIndex = int.Parse (GameObject.Find("playerSelect2").GetComponentInChildren<UILabel>().text);
+				Debug.Log("Player "+ turn+ "will strike player : "+int.Parse (GameObject.Find("playerSelect2").GetComponentInChildren<UILabel>().text));
+				GameObject.Find ("playerSelect2").GetComponent<UIButton>().defaultColor= Color.red;
+				GameObject.Find("playerSelect2").GetComponent<UIButton>().UpdateColor(true,true);
+			}
+		}
+	}
+
+	public void clickTarget2(){
+
+		if(turn != 2)
+		{
+		if(singleTarget== true)
+		{
+				singleTargetVictim = 2;
+				resetTargetColor();
+			users[turn].atkUserIndex = int.Parse (GameObject.Find("playerSelect3").GetComponentInChildren<UILabel>().text);
+				Debug.Log("Player "+ turn+ "will strike player : "+int.Parse (GameObject.Find("playerSelect3").GetComponentInChildren<UILabel>().text));
+				GameObject.Find ("playerSelect3").GetComponent<UIButton>().defaultColor= Color.red;
+				GameObject.Find("playerSelect3").GetComponent<UIButton>().UpdateColor(true,true);
+			}
+		}
+	}
+
+	public void clickTarget3(){
+		if(turn!=3)
+		{
+		if(singleTarget== true)
+		{
+				singleTargetVictim = 3;
+				resetTargetColor();
+			users[turn].atkUserIndex = int.Parse (GameObject.Find("playerSelect4").GetComponentInChildren<UILabel>().text);
+				Debug.Log("Player "+ turn+ "will strike player : "+int.Parse (GameObject.Find("playerSelect4").GetComponentInChildren<UILabel>().text));
+				GameObject.Find ("playerSelect4").GetComponent<UIButton>().defaultColor= Color.red;
+				GameObject.Find("playerSelect4").GetComponent<UIButton>().UpdateColor(true,true);
+			}
+		}
+	}
+
+	public void clickTarget4(){
+		if(turn != 4)
+		{
+			if(singleTarget== true)
+			{
+				singleTargetVictim = 4;
+				resetTargetColor();
+				users[turn].atkUserIndex = int.Parse (GameObject.Find("playerSelect5").GetComponentInChildren<UILabel>().text);
+				Debug.Log("Player "+ turn+ "will strike player : "+int.Parse (GameObject.Find("playerSelect5").GetComponentInChildren<UILabel>().text));
+				GameObject.Find ("playerSelect5").GetComponent<UIButton>().defaultColor= Color.red;
+				GameObject.Find("playerSelect5").GetComponent<UIButton>().UpdateColor(true,true);
+			}
+		}
+	}
+
+
+
+
+
+
+	public void pickAction0(){//allegation
+	
 			actIndex = int.Parse(GameObject.Find ("btn0").GetComponentInChildren<UILabel>().text);
-			Debug.Log (actIndex);
-			pickedAction = true;
-		}
+		Debug.Log(actIndex);
+			users[turn].hand.acArr[actIndex].showCard();
+		checkTargetUsers(actIndex);
 	}
 
-	public void pickAction1(){
-		if(pickedAction==false)
-		{
+	public void pickAction1(){//taunt
+
 			actIndex = int.Parse(GameObject.Find ("btn10").GetComponentInChildren<UILabel>().text);
-			Debug.Log (actIndex);
-			pickedAction = true;
-		}
+		Debug.Log(actIndex);
+		
+		users[turn].hand.acArr[actIndex].showCard();
+		checkTargetUsers(actIndex);
+		
+	
 	}
 
-	public void pickAction2(){
-		if(pickedAction==false)
-		{
+	public void pickAction2(){//snitch
+		
 			actIndex = int.Parse(GameObject.Find ("btn20").GetComponentInChildren<UILabel>().text);
-			Debug.Log (actIndex);
-		}
+		Debug.Log(actIndex);
+			users[turn].hand.acArr[actIndex].showCard();
+		checkTargetUsers(actIndex);
 	}
 	
-	public void pickAction3(){
-		if(pickedAction==false)
-		{
+	public void pickAction3(){//blame
+		
 			actIndex = int.Parse(GameObject.Find ("btn30").GetComponentInChildren<UILabel>().text);
-			Debug.Log (actIndex);
-			pickedAction = true;
-		}
+		Debug.Log(actIndex);
+			
+
+			users[turn].hand.acArr[actIndex].showCard();
+		checkTargetUsers(actIndex);
 	}
 
-	public void pickAction4(){
-		if(pickedAction==false)
-		{
+	public void pickAction4(){//heal
+
+		
 			actIndex = int.Parse(GameObject.Find ("btn40").GetComponentInChildren<UILabel>().text);
-			Debug.Log (actIndex);
-			pickedAction = true;
-		}
+		Debug.Log(actIndex);
+			users[turn].hand.acArr[actIndex].showCard();
+		checkTargetUsers(actIndex);
 	}
-	
-	public void pickAction5(){
-		if(pickedAction==false)
-		{
+
+	public void pickAction5(){//defend
+
 			actIndex = int.Parse(GameObject.Find ("btn50").GetComponentInChildren<UILabel>().text);
-			Debug.Log (actIndex);
-			pickedAction = true;
-		}
-	}
-	
-	public void pickAction6(){
-		if(pickedAction==false)
-		{
-			actIndex = int.Parse(GameObject.Find ("btn60").GetComponentInChildren<UILabel>().text);
-			Debug.Log (actIndex);
-			pickedAction = true;
-		}
-	}
-	
-	public void pickAction7(){
-		if(pickedAction==false)
-		{actIndex = int.Parse(GameObject.Find ("btn70").GetComponentInChildren<UILabel>().text);
-			Debug.Log (actIndex);
-			pickedAction = true;
-		}
-	}
-
-	public void pickAction8(){
-		if(pickedAction==false)
-			actIndex = int.Parse(GameObject.Find ("btn80").GetComponentInChildren<UILabel>().text);
-		Debug.Log (actIndex);
-		pickedAction = true;
-	}
-	
-	public void pickAction9(){
-		if(pickedAction==false)
-		{
-			actIndex = int.Parse(GameObject.Find ("btn90").GetComponentInChildren<UILabel>().text);
-			Debug.Log (actIndex);
-			pickedAction = true;
-		}
-	}
-	
-	public void pickAction10(){
-		if(pickedAction==false)
-		{
-			actIndex = int.Parse(GameObject.Find ("btn100").GetComponentInChildren<UILabel>().text);
-			Debug.Log (actIndex);
-			pickedAction = true;
-		}
-	}
-	
-	public void pickAction11(){
-		if(pickedAction==false)
-		{
-			actIndex = int.Parse(GameObject.Find ("btn110").GetComponentInChildren<UILabel>().text);
-			Debug.Log (actIndex);
-			pickedAction = true;
-		}
-	}
-	
-	public void pickAction12(){
-		if(pickedAction==false)
-		{
-			actIndex = int.Parse(GameObject.Find ("btn120").GetComponentInChildren<UILabel>().text);
-			Debug.Log (actIndex);
-			pickedAction = true;
-		}
-	}
-	
-	public void pickAction13(){
-		if(pickedAction==false)
-		{
-			actIndex = int.Parse(GameObject.Find ("btn130").GetComponentInChildren<UILabel>().text);
-			Debug.Log (actIndex);
-			pickedAction = true;
-		}
-	}
-	
-	public void pickAction14(){
-		if(pickedAction==false)
-		{
-			actIndex = int.Parse(GameObject.Find ("btn140").GetComponentInChildren<UILabel>().text);
-			Debug.Log (actIndex);
-			pickedAction = true;
-		}
-	}
-	
-	public void pickAction15(){
-		if(pickedAction==false)
-		{
-			actIndex = int.Parse(GameObject.Find ("btn150").GetComponentInChildren<UILabel>().text);
-			Debug.Log (actIndex);
-			pickedAction = true;
-		}
-	}
-
-	public void pickAction16(){
-		if(pickedAction==false)
-		{
-			actIndex = int.Parse(GameObject.Find ("btn160").GetComponentInChildren<UILabel>().text);
-			Debug.Log (actIndex);
-			pickedAction = true;
-		}
-	}
-	
-	public void pickAction17(){
-		if(pickedAction==false)
-		{
-			actIndex = int.Parse(GameObject.Find ("btn170").GetComponentInChildren<UILabel>().text);
-			Debug.Log (actIndex);
-			pickedAction = true;
-		}
-	}
-	
-	public void pickAction18(){
-		if(pickedAction==false)
-		{
-			actIndex = int.Parse(GameObject.Find ("btn180").GetComponentInChildren<UILabel>().text);
-			Debug.Log (actIndex);
-			pickedAction = true;
-		}
-	}
-	
-	public void pickAction19(){
-		if(pickedAction==false)
-		{
-			actIndex = int.Parse(GameObject.Find ("btn190").GetComponentInChildren<UILabel>().text);
-			Debug.Log (actIndex);
-			pickedAction = true;
-		}
+		Debug.Log(actIndex);
+			users[turn].hand.acArr[actIndex].showCard();
+		checkTargetUsers(actIndex);
 	}
 
 	//--------------------------------------------------------------------------------------
 
 
-	public void pickTarget(Player p, int index){
-	
+
+
+	public void revealacArr(){
+		turn = 0;
 	}
 
-	public void revealCards(){
+	public int comparePriorities(int i, int j)
+	{
+		if(i > j)
+			return 1;
+		else
+		if(i < j)
+			return -1;
+		else
+			return 0;
+
 	}
 
 	public void combatPhase(){
+		for(int i = 0; i < ppl.Length; i++){
+			Debug.Log("player "+i+"'s action index- "+ppl[i,0]);
+		}
+
+		int highestPriorityUser = -1;
+		int secondPriorityUser = -1;
+		int thirdPriorityUser = -1;
+		int forthPriorityUser = -1;
+		int lastPriorityUser = -1;
+
+		for(int i = 0; i < ppl.Length; i++){
+			Debug.Log("player "+i+"'s action index- "+ppl[i,0]);
+
+			if(i ==0)
+			{
+				highestPriorityUser = i;
+			}
+			else
+			if(i==1)
+			{
+				if(comparePriorities(users[i].hand.acArr[ ppl[i,0] ].priority, users[highestPriorityUser].hand.acArr[ ppl[highestPriorityUser,0] ].priority) == 1)
+				{
+					secondPriorityUser = highestPriorityUser;
+					highestPriorityUser = i;
+
+				}
+				else
+					if(comparePriorities(users[i].hand.acArr[ ppl[i,0] ].priority, users[highestPriorityUser].hand.acArr[ ppl[highestPriorityUser,0] ].priority) == -1
+					   || comparePriorities(users[i].hand.acArr[ ppl[i,0] ].priority, users[highestPriorityUser].hand.acArr[ ppl[highestPriorityUser,0] ].priority) == 0)
+				{
+					secondPriorityUser = i;
+					highestPriorityUser = highestPriorityUser;
+				}
+
+
+			}
+			else
+			if(i==2)
+			{ // i > top
+				if(comparePriorities(users[i].hand.acArr[ ppl[i,0] ].priority, users[highestPriorityUser].hand.acArr[ ppl[highestPriorityUser,0] ].priority) == 1)
+				{
+					thirdPriorityUser = secondPriorityUser;
+					secondPriorityUser = highestPriorityUser;
+					highestPriorityUser = i;
+					
+				}// i < top or i == top
+				else
+					if(comparePriorities(users[i].hand.acArr[ ppl[i,0] ].priority, users[highestPriorityUser].hand.acArr[ ppl[highestPriorityUser,0] ].priority) == -1 ||
+					   comparePriorities(users[i].hand.acArr[ ppl[i,0] ].priority, users[highestPriorityUser].hand.acArr[ ppl[highestPriorityUser,0] ].priority) == 0   )
+				{
+					if(comparePriorities(users[i].hand.acArr[ ppl[i,0] ].priority, users[secondPriorityUser].hand.acArr[ ppl[secondPriorityUser,0] ].priority) == 1 )
+					{//if i > 2nd
+						thirdPriorityUser = secondPriorityUser;
+						secondPriorityUser = i;
+					}
+					else
+						if(comparePriorities(users[i].hand.acArr[ ppl[i,0] ].priority, users[secondPriorityUser].hand.acArr[ ppl[secondPriorityUser,0] ].priority) == -1
+						   || comparePriorities(users[i].hand.acArr[ ppl[i,0] ].priority, users[secondPriorityUser].hand.acArr[ ppl[secondPriorityUser,0] ].priority) == 0)
+					{
+						//if i < 2nd or i == 2nd
+						thirdPriorityUser = i;
+					}
+
+				}
+
+			}
+
+			if(i==3)
+			{//i > top
+				if(comparePriorities(users[i].hand.acArr[ ppl[i,0] ].priority, users[highestPriorityUser].hand.acArr[ ppl[highestPriorityUser,0] ].priority) == 1)
+				{
+					forthPriorityUser = thirdPriorityUser;
+					thirdPriorityUser = secondPriorityUser;
+					secondPriorityUser = highestPriorityUser;
+					highestPriorityUser = i;
+					
+				}
+				else//i< top or i== top
+					if(comparePriorities(users[i].hand.acArr[ ppl[i,0] ].priority, users[highestPriorityUser].hand.acArr[ ppl[highestPriorityUser,0] ].priority) == -1 ||
+					   comparePriorities(users[i].hand.acArr[ ppl[i,0] ].priority, users[highestPriorityUser].hand.acArr[ ppl[highestPriorityUser,0] ].priority) == 0   )
+				{
+					//if i> 2nd
+					if(comparePriorities(users[i].hand.acArr[ ppl[i,0] ].priority, users[secondPriorityUser].hand.acArr[ ppl[secondPriorityUser,0] ].priority) == 1)
+					{
+						forthPriorityUser = thirdPriorityUser;
+						thirdPriorityUser = secondPriorityUser;
+						secondPriorityUser = i;
+						
+					}
+					else//if i< 2nd or i == 2nd
+						if(comparePriorities(users[i].hand.acArr[ ppl[i,0] ].priority, users[secondPriorityUser].hand.acArr[ ppl[secondPriorityUser,0] ].priority) == -1 ||
+						   comparePriorities(users[i].hand.acArr[ ppl[i,0] ].priority, users[secondPriorityUser].hand.acArr[ ppl[secondPriorityUser,0] ].priority) == 0   )
+					{//if i > 3rd
+						if(comparePriorities(users[i].hand.acArr[ ppl[i,0] ].priority, users[thirdPriorityUser].hand.acArr[ ppl[thirdPriorityUser,0] ].priority) == 1 )
+						{
+							forthPriorityUser = thirdPriorityUser;
+							thirdPriorityUser = i;
+						}//if i <=3rd 
+						if(comparePriorities(users[i].hand.acArr[ ppl[i,0] ].priority, users[thirdPriorityUser].hand.acArr[ ppl[thirdPriorityUser,0] ].priority) == -1
+						   || comparePriorities(users[i].hand.acArr[ ppl[i,0] ].priority, users[thirdPriorityUser].hand.acArr[ ppl[thirdPriorityUser,0] ].priority) == 0)
+						{
+							
+							forthPriorityUser = i;
+						}
+						
+					}
+					
+				}
+				
+			}
+
+			if(i == 4){
+			
+			
+				if(comparePriorities(users[i].hand.acArr[ ppl[i,0] ].priority, users[highestPriorityUser].hand.acArr[ ppl[highestPriorityUser,0] ].priority) == 1)
+				{
+					lastPriorityUser = forthPriorityUser;
+					forthPriorityUser = thirdPriorityUser;
+					thirdPriorityUser = secondPriorityUser;
+					secondPriorityUser = highestPriorityUser;
+					highestPriorityUser = i;
+					
+				}
+				else//i< top or i== top
+					if(comparePriorities(users[i].hand.acArr[ ppl[i,0] ].priority, users[highestPriorityUser].hand.acArr[ ppl[highestPriorityUser,0] ].priority) == -1 ||
+					   comparePriorities(users[i].hand.acArr[ ppl[i,0] ].priority, users[highestPriorityUser].hand.acArr[ ppl[highestPriorityUser,0] ].priority) == 0   )
+				{
+					//if i> 2nd
+					if(comparePriorities(users[i].hand.acArr[ ppl[i,0] ].priority, users[secondPriorityUser].hand.acArr[ ppl[secondPriorityUser,0] ].priority) == 1)
+					{
+						forthPriorityUser = thirdPriorityUser;
+						thirdPriorityUser = secondPriorityUser;
+						secondPriorityUser = i;
+						
+					}
+					else//if i< 2nd or i == 2nd
+						if(comparePriorities(users[i].hand.acArr[ ppl[i,0] ].priority, users[secondPriorityUser].hand.acArr[ ppl[secondPriorityUser,0] ].priority) == -1 ||
+						   comparePriorities(users[i].hand.acArr[ ppl[i,0] ].priority, users[secondPriorityUser].hand.acArr[ ppl[secondPriorityUser,0] ].priority) == 0   )
+					{//if i > 3rd
+						if(comparePriorities(users[i].hand.acArr[ ppl[i,0] ].priority, users[thirdPriorityUser].hand.acArr[ ppl[thirdPriorityUser,0] ].priority) == 1 )
+						{
+							forthPriorityUser = thirdPriorityUser;
+							thirdPriorityUser = i;
+						}
+						else//if i <=3rd 
+							if(comparePriorities(users[i].hand.acArr[ ppl[i,0] ].priority, users[thirdPriorityUser].hand.acArr[ ppl[thirdPriorityUser,0] ].priority) == -1
+							   || comparePriorities(users[i].hand.acArr[ ppl[i,0] ].priority, users[thirdPriorityUser].hand.acArr[ ppl[thirdPriorityUser,0] ].priority) == 0)
+						{
+
+							if(comparePriorities(users[i].hand.acArr[ ppl[i,0] ].priority, users[forthPriorityUser].hand.acArr[ ppl[forthPriorityUser,0] ].priority) == 1 )
+							{
+								lastPriorityUser = forthPriorityUser;
+								forthPriorityUser = i;
+							}
+							else//if i <=3rd 
+								if(comparePriorities(users[i].hand.acArr[ ppl[i,0] ].priority, users[forthPriorityUser].hand.acArr[ ppl[forthPriorityUser,0] ].priority) == -1
+								   || comparePriorities(users[i].hand.acArr[ ppl[i,0] ].priority, users[forthPriorityUser].hand.acArr[ ppl[forthPriorityUser,0] ].priority) == 0)
+							{
+
+								lastPriorityUser = i;
+							}
+
+						}
+						
+					}
+					
+				}
+			
+			}
+
+			Debug.Log("1st priority is player index - "+highestPriorityUser);
+			Debug.Log("2nd priority is player index - "+secondPriorityUser);
+			Debug.Log("3rd priority is player index - "+thirdPriorityUser);
+			Debug.Log("4th priority is player index - "+forthPriorityUser);
+			Debug.Log("5th priority is player index - "+lastPriorityUser);
+	   }
+
 	}
 
 	public void calcNewSuspicionPt(Player p, int index){ //reduce points
@@ -439,7 +1134,7 @@ public class gameManager : MonoBehaviour {
 		users[1].setRole (p2);
 		users[2].setRole(p3);
 		users[3].setRole (p4);
-		
+		users[4].setRole (p5);
 		for(int i = 0; i < users.Length; i++){
 			Debug.Log (users[i].role);
 		}
@@ -481,6 +1176,12 @@ public class gameManager : MonoBehaviour {
 			Debug.Log("player4 is: "+p4);
 			users[3].setRole(p4);
 			break;
+			case 4: 
+				p5 = GameObject.Find ("name").GetComponentInParent<UILabel>().text;
+				btnTopLPicked = true;
+				Debug.Log("player5 is: "+p5);
+				users[4].setRole(p4);
+				break;
 		}
 			btnTopL.defaultColor = btnTopL.disabledColor;
 
@@ -520,6 +1221,12 @@ public class gameManager : MonoBehaviour {
 				Debug.Log("player4 is: "+p4);
 				users[3].setRole(p4);
 				break;
+			case 4: 
+				p5 = GameObject.Find ("name2").GetComponentInParent<UILabel>().text;
+				btnBotLPicked = true;
+				Debug.Log("player5 is: "+p5);
+				users[4].setRole(p5);
+				break;
 			}
 			btnTopR.defaultColor = btnTopR.disabledColor;
 			count++;
@@ -557,6 +1264,12 @@ public class gameManager : MonoBehaviour {
 				btnBotLPicked = true;
 				Debug.Log("player4 is: "+p4);
 				users[3].setRole(p4);
+				break;
+			case 4: 
+				p5 = GameObject.Find ("name3").GetComponentInParent<UILabel>().text;
+				btnBotLPicked = true;
+				Debug.Log("player5 is: "+p5);
+				users[4].setRole(p5);
 				break;
 		}
 			btnBotL.defaultColor = btnBotL.disabledColor;
@@ -597,11 +1310,58 @@ public class gameManager : MonoBehaviour {
 				Debug.Log("player4 is: "+p4);
 				users[3].setRole(p4);
 				break;
+			case 4: 
+				p5 = GameObject.Find ("name4").GetComponentInParent<UILabel>().text;
+				btnBotRPicked = true;
+				Debug.Log("player5 is: "+p5);
+				users[4].setRole(p5);
+				break;
 			}
 			btnBotR.defaultColor = btnBotR.disabledColor;
 			count++;
 		}
-
+	}
+		public void ClickProfile5(){
+			
+		if(btnMidPicked == false)
+			{
+				switch(count){
+				case 0: 
+					p1 = GameObject.Find ("name5").GetComponentInParent<UILabel>().text;
+				btnMidPicked = true;
+					Debug.Log("player1 is: "+p1);
+					users[0].setRole(p1);
+					break;
+					
+				case 1: 
+					p2 = GameObject.Find ("name5").GetComponentInParent<UILabel>().text;
+				btnMidPicked = true;
+					Debug.Log("player2 is: "+p2);
+					users[1].setRole(p2);
+					break;  
+				case 2: 
+					
+					p3 = GameObject.Find ("name5").GetComponentInParent<UILabel>().text;
+				btnMidPicked = true;
+					Debug.Log("player3 is: "+p3);
+					users[2].setRole(p3);
+					break;
+				case 3: 
+					p4 = GameObject.Find ("name5").GetComponentInParent<UILabel>().text;
+				btnMidPicked = true;
+					Debug.Log("player4 is: "+p4);
+					users[3].setRole(p4);
+					break;
+				case 4: 
+					p5 = GameObject.Find ("name5").GetComponentInParent<UILabel>().text;
+				btnMidPicked = true;
+					Debug.Log("player5 is: "+p5);
+					users[4].setRole(p5);
+					break;
+				}
+				btnMid.defaultColor = btnMid.disabledColor;
+				count++;
+			}
 
 	}
 

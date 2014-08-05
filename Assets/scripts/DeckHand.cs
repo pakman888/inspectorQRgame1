@@ -16,41 +16,20 @@ public class DeckHand : MonoBehaviour {
 
 
 
-	}/*
-	public void setActionCard(int dmg, string n, int _cd, int dt, int ht, int tt){
-		suspicionDMG = dmg;
-		cName = n;
-		cooldwn = _cd;
-		dmg_type = dt;
-		heal_type = ht;
-		target_type = tt;
-	}*/
+	}
 	void setacArr(int index, actionCard ac){
 		switch(index)
 		{
-			//damage, name, cooldown, damage type, heal type, target type
-		case 0: ac.setActionCard(1, "0", 1, 1, 0, 1); break;
-		case 1: ac.setActionCard(2, "10", 1,0, 1, 0);break;
-		case 2: ac.setActionCard(3, "20", 1, 2, 0, 3);break;
-		case 3: ac.setActionCard(1, "30", 2, 0, 0, 0);break;
-		case 4: ac.setActionCard(5, "40", 1, 1, 0, 1);break;
-		case 5: ac.setActionCard(6, "50", 8, 1, 0, 1);break;
-		case 6: ac.setActionCard(7, "60", 14, 1, 0, 1);break;
-		case 7: ac.setActionCard(8, "70", 17, 1, 0, 1);break;
-		case 8: ac.setActionCard(9, "80", 15, 1, 0, 1);break;
-		case 9: ac.setActionCard(10, "90", 12, 1, 0, 1);break;
-		case 10: ac.setActionCard(11, "100", 18, 1, 0, 1);break;
-		case 11: ac.setActionCard(12, "110", 0, 1, 0, 1);break;
-
-			
-		case 12: ac.setActionCard(13, "120", 4, 1, 0, 1);break;
-		case 13: ac.setActionCard(14, "130", 5, 1, 0, 1);break;
-		case 14: ac.setActionCard(15, "140", 9, 1, 0, 1);break;
-		case 15: ac.setActionCard(16, "150", 10, 1, 0, 1);break;
-		case 16: ac.setActionCard(17, "160", 11, 1, 0, 1);break;
-		case 17: ac.setActionCard(18, "170", 13, 1, 0, 1);break;
-		case 18: ac.setActionCard(19, "180", 16, 1, 0, 1);break;
-		case 19: ac.setActionCard(20, "190", 19, 1, 0, 1);break;
+			//setActionCard(bool isAttack, bool isDef, bool repAtkConseq,bool isDmgDealer, bool singlePlayerDmg, bool isHeal,
+			// bool isBlock, bool actionSuccessful, int suspicionDmg, int cd, int limit )
+			//default, actions are not successful (false)
+		case 0: ac.setActionCard(true, false, false ,true,true , false, false, false, 1, 1, 10, 1); break; //allegation
+		case 1: ac.setActionCard(true, false, false, false,true,false, false, false, 0, 1, 10, 5);break;//taunt
+		case 2: ac.setActionCard(true, false, true, true, false, false, false, false, 3, 2, 2, 2);break; //snitch
+		case 3: ac.setActionCard(true, false, false, true, false, false, false, false, 0, 1, 10, 3);break; //blame. depends how many people use it at the same time
+		case 4: ac.setActionCard(false, true, false, false, false, true, false, false, -2, 1, 10, 4);break;//reason. +2 if user is blamed or allegated
+		case 5: ac.setActionCard(false, true, false, false, false, false, true, false, 0, 1, 10, 6);break;//defend
+	
 		default: ;break;
 		}
 	}
@@ -62,7 +41,6 @@ public class DeckHand : MonoBehaviour {
 		}
 		return u;
 	}
-
 
 
 }
