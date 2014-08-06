@@ -170,6 +170,7 @@ public class gameManager : MonoBehaviour {
 						enableScwBtns();
 						scw.enabled = true;
 						uhw.enabled = true;
+						btnStart.enabled = false;
 					}
 				}
 			}
@@ -177,6 +178,7 @@ public class gameManager : MonoBehaviour {
 
 		if(roundBegins == true)
 		{
+
 				if(round < maxRound){
 				 GameObject.Find("roundIndicator").GetComponent<UILabel>().text = "Round "+ round;
 				if(turn <5){
@@ -238,7 +240,7 @@ public class gameManager : MonoBehaviour {
 	{
 
 		dummy = btn.defaultColor;
-		btn.defaultColor = btnStart.disabledColor;
+		btn.defaultColor = btn.disabledColor;
 		btn.enabled = false;
 
 	}
@@ -296,7 +298,41 @@ public class gameManager : MonoBehaviour {
 
 		if(singleTarget == true)
 		{
-			users[turn].atkUserIndex = singleTargetVictim;
+			if(users[turn].hand.acArr[actIndex].isBlame())
+			{
+				Debug.Log ("blame target user is: "+singleTargetVictim);
+				users[turn].atkUserIndex = singleTargetVictim;
+				users[singleTargetVictim].multiplier+=1;
+			}
+			else
+			if(users[turn].hand.acArr[actIndex].isAllegation() || users[turn].hand.acArr[actIndex].isTaunt())
+			{
+				Debug.Log ("single target user is: "+singleTargetVictim);
+				users[turn].atkUserIndex = singleTargetVictim;
+				users[singleTargetVictim].receiveUserIndexAttack = turn;
+			}
+
+		}
+		else
+		if(singleTarget == false)
+		{
+			if(users[turn].hand.acArr[actIndex].isHeal == true)
+			{
+				users[turn].isHealing = true;
+				Debug.Log ("snitching everyone");
+			}
+
+			if(users[turn].hand.acArr[actIndex].isBlock == true)
+			{
+				users[turn].isDefending = true;
+				Debug.Log ("snitching everyone");
+			}
+
+			if(users[turn].hand.acArr[actIndex].isSnitch() == true)
+			{
+				Debug.Log ("snitching everyone");
+			}
+			
 		}
 
 		resetTargetColor();
@@ -325,10 +361,12 @@ public class gameManager : MonoBehaviour {
 
 	void resetTargetColor(){
 		Debug.Log("reset target colour");
-		singleTarget = true;
 
 			if(turn == 0){
-				GameObject.Find ("playerSelect2").GetComponent<UIButton>().defaultColor= Color.white;
+			GameObject.Find ("playerSelect1").GetComponent<UIButton>().defaultColor= GameObject.Find ("playerSelect1").GetComponent<UIButton>().disabledColor;
+			GameObject.Find ("playerSelect1").GetComponent<UIButton>().UpdateColor(true,true);	
+
+			GameObject.Find ("playerSelect2").GetComponent<UIButton>().defaultColor= Color.white;
 			GameObject.Find ("playerSelect2").GetComponent<UIButton>().UpdateColor(true,true);
 
 			GameObject.Find ("playerSelect3").GetComponent<UIButton>().defaultColor= Color.white;
@@ -345,6 +383,9 @@ public class gameManager : MonoBehaviour {
 			if(turn == 1){
 				GameObject.Find ("playerSelect1").GetComponent<UIButton>().defaultColor= Color.white;
 			GameObject.Find ("playerSelect1").GetComponent<UIButton>().UpdateColor(true,true);
+
+			GameObject.Find ("playerSelect2").GetComponent<UIButton>().defaultColor= GameObject.Find ("playerSelect2").GetComponent<UIButton>().disabledColor;
+			GameObject.Find ("playerSelect2").GetComponent<UIButton>().UpdateColor(true,true);	
 
 				GameObject.Find ("playerSelect3").GetComponent<UIButton>().defaultColor= Color.white;
 			GameObject.Find ("playerSelect3").GetComponent<UIButton>().UpdateColor(true,true);
@@ -364,6 +405,8 @@ public class gameManager : MonoBehaviour {
 				GameObject.Find ("playerSelect2").GetComponent<UIButton>().defaultColor= Color.white;
 			GameObject.Find ("playerSelect2").GetComponent<UIButton>().UpdateColor(true,true);
 
+			GameObject.Find ("playerSelect3").GetComponent<UIButton>().defaultColor= GameObject.Find ("playerSelect3").GetComponent<UIButton>().disabledColor;
+			GameObject.Find ("playerSelect3").GetComponent<UIButton>().UpdateColor(true,true);	
 				GameObject.Find ("playerSelect4").GetComponent<UIButton>().defaultColor= Color.white;
 			GameObject.Find ("playerSelect4").GetComponent<UIButton>().UpdateColor(true,true);
 
@@ -382,6 +425,9 @@ public class gameManager : MonoBehaviour {
 				GameObject.Find ("playerSelect3").GetComponent<UIButton>().defaultColor= Color.white;
 			GameObject.Find ("playerSelect3").GetComponent<UIButton>().UpdateColor(true,true);
 
+			GameObject.Find ("playerSelect4").GetComponent<UIButton>().defaultColor= GameObject.Find ("playerSelect4").GetComponent<UIButton>().disabledColor;
+			GameObject.Find ("playerSelect4").GetComponent<UIButton>().UpdateColor(true,true);	
+
 				GameObject.Find ("playerSelect5").GetComponent<UIButton>().defaultColor= Color.white;
 			GameObject.Find ("playerSelect5").GetComponent<UIButton>().UpdateColor(true,true);
 
@@ -399,6 +445,8 @@ public class gameManager : MonoBehaviour {
 			GameObject.Find ("playerSelect4").GetComponent<UIButton>().defaultColor= Color.white;
 			GameObject.Find ("playerSelect4").GetComponent<UIButton>().UpdateColor(true,true);
 
+			GameObject.Find ("playerSelect5").GetComponent<UIButton>().defaultColor= GameObject.Find ("playerSelect5").GetComponent<UIButton>().disabledColor;
+			GameObject.Find ("playerSelect5").GetComponent<UIButton>().UpdateColor(true,true);	
 			}
 		
 
@@ -666,8 +714,6 @@ public class gameManager : MonoBehaviour {
 	public void snitchAll(){
 
 		singleTarget= false;
-		if(users[turn].hand.acArr[actIndex].isSnitch())
-		{
 			resetTargetColor();
 			if(turn == 0){
 				Debug.Log("p2,p3,p4,p5 will be damaged from snitch");
@@ -727,7 +773,7 @@ public class gameManager : MonoBehaviour {
 				GameObject.Find ("playerSelect4").GetComponent<UIButton>().defaultColor= Color.red;
 					GameObject.Find("playerSelect4").GetComponent<UIButton>().UpdateColor(true,true);
 			}
-		}
+
 	}
 
 	public void blameTarget(){
@@ -737,6 +783,87 @@ public class gameManager : MonoBehaviour {
 
 	public void healUser(){
 		singleTarget = false;
+
+			resetTargetColor();
+		if(users[turn].hand.acArr[actIndex].isHeal == true)
+		{	if(turn == 0){
+				Debug.Log("may heal p1");
+				GameObject.Find ("playerSelect1").GetComponent<UIButton>().defaultColor= new Color(62,255,0,255);
+				GameObject.Find("playerSelect1").GetComponent<UIButton>().UpdateColor(true,true);
+
+				GameObject.Find ("playerSelect2").GetComponent<UIButton>().defaultColor= Color.black;
+				GameObject.Find("playerSelect2").GetComponent<UIButton>().UpdateColor(true,true);
+
+				GameObject.Find ("playerSelect3").GetComponent<UIButton>().defaultColor= Color.black;
+			GameObject.Find("playerSelect3").GetComponent<UIButton>().UpdateColor(true,true);
+				GameObject.Find ("playerSelect4").GetComponent<UIButton>().defaultColor= Color.black;
+			GameObject.Find("playerSelect4").GetComponent<UIButton>().UpdateColor(true,true);
+
+			GameObject.Find ("playerSelect5").GetComponent<UIButton>().defaultColor= Color.black;
+			GameObject.Find("playerSelect5").GetComponent<UIButton>().UpdateColor(true,true);
+			}
+			
+			else
+			if(turn ==1)
+				Debug.Log("may heal p2");
+			{
+				GameObject.Find ("playerSelect1").GetComponent<UIButton>().defaultColor= Color.black;
+			GameObject.Find("playerSelect1").GetComponent<UIButton>().UpdateColor(true,true);
+				GameObject.Find ("playerSelect2").GetComponent<UIButton>().defaultColor= new Color(62,255,0,255);
+						GameObject.Find("playerSelect2").GetComponent<UIButton>().UpdateColor(true,true);
+				GameObject.Find ("playerSelect3").GetComponent<UIButton>().defaultColor= Color.black;
+			GameObject.Find("playerSelect3").GetComponent<UIButton>().UpdateColor(true,true);
+				GameObject.Find ("playerSelect4").GetComponent<UIButton>().defaultColor= Color.black;
+			GameObject.Find("playerSelect4").GetComponent<UIButton>().UpdateColor(true,true);
+				GameObject.Find ("playerSelect5").GetComponent<UIButton>().defaultColor= Color.black;
+			GameObject.Find("playerSelect5").GetComponent<UIButton>().UpdateColor(true,true);
+		}/*
+		else
+			if(turn == 2){
+				Debug.Log("may heal p3");
+				GameObject.Find ("playerSelect1").GetComponent<UIButton>().defaultColor= Color.black;
+			GameObject.Find("playerSelect1").GetComponent<UIButton>().UpdateColor(false,true);
+				GameObject.Find ("playerSelect2").GetComponent<UIButton>().defaultColor= Color.black;
+			GameObject.Find("playerSelect2").GetComponent<UIButton>().UpdateColor(false,true);
+						GameObject.Find ("playerSelect3").GetComponent<UIButton>().defaultColor= new Color(62,255,0,255);
+			GameObject.Find("playerSelect3").GetComponent<UIButton>().UpdateColor(false,true);
+				GameObject.Find ("playerSelect4").GetComponent<UIButton>().defaultColor= Color.black;
+			GameObject.Find("playerSelect4").GetComponent<UIButton>().UpdateColor(false,true);
+				GameObject.Find ("playerSelect5").GetComponent<UIButton>().defaultColor= Color.black;
+			GameObject.Find("playerSelect5").GetComponent<UIButton>().UpdateColor(false,true);
+			}
+		else
+			if(turn == 3){
+				Debug.Log("may heal p4");
+				GameObject.Find ("playerSelect1").GetComponent<UIButton>().defaultColor= Color.black;
+			GameObject.Find("playerSelect1").GetComponent<UIButton>().UpdateColor(false,true);
+				GameObject.Find ("playerSelect2").GetComponent<UIButton>().defaultColor= Color.black;
+			GameObject.Find("playerSelect2").GetComponent<UIButton>().UpdateColor(false,true);
+				GameObject.Find ("playerSelect3").GetComponent<UIButton>().defaultColor= Color.black;
+			GameObject.Find("playerSelect3").GetComponent<UIButton>().UpdateColor(false,true);
+				GameObject.Find ("playerSelect4").GetComponent<UIButton>().defaultColor= new Color(62,255,0,255);
+			GameObject.Find("playerSelect4").GetComponent<UIButton>().UpdateColor(false,true);
+
+				GameObject.Find ("playerSelect5").GetComponent<UIButton>().defaultColor= Color.black;
+			GameObject.Find("playerSelect5").GetComponent<UIButton>().UpdateColor(false,true);
+			}
+			else
+			if(turn == 4){Debug.Log("may heal p5");
+				GameObject.Find ("playerSelect1").GetComponent<UIButton>().defaultColor= Color.black;
+			GameObject.Find("playerSelect1").GetComponent<UIButton>().UpdateColor(false,true);
+				GameObject.Find ("playerSelect2").GetComponent<UIButton>().defaultColor= Color.black;
+			GameObject.Find("playerSelect2").GetComponent<UIButton>().UpdateColor(false,true);
+				GameObject.Find ("playerSelect3").GetComponent<UIButton>().defaultColor= Color.black;
+			GameObject.Find("playerSelect3").GetComponent<UIButton>().UpdateColor(false,true);
+				GameObject.Find ("playerSelect4").GetComponent<UIButton>().defaultColor= Color.black;
+			GameObject.Find("playerSelect4").GetComponent<UIButton>().UpdateColor(false,true);
+					GameObject.Find ("playerSelect4").GetComponent<UIButton>().defaultColor= new Color(62,255,0,255);
+			GameObject.Find("playerSelect4").GetComponent<UIButton>().UpdateColor(false,true);
+			}*/
+
+		}
+
+
 	}
 
 	public void blockUser(){
@@ -824,7 +951,7 @@ public class gameManager : MonoBehaviour {
 		{
 				singleTargetVictim = 2;
 				resetTargetColor();
-			users[turn].atkUserIndex = int.Parse (GameObject.Find("playerSelect3").GetComponentInChildren<UILabel>().text);
+				users[turn].atkUserIndex = int.Parse (GameObject.Find("playerSelect3").GetComponentInChildren<UILabel>().text);
 				Debug.Log("Player "+ turn+ "will strike player : "+int.Parse (GameObject.Find("playerSelect3").GetComponentInChildren<UILabel>().text));
 				GameObject.Find ("playerSelect3").GetComponent<UIButton>().defaultColor= Color.red;
 				GameObject.Find("playerSelect3").GetComponent<UIButton>().UpdateColor(true,true);
@@ -942,9 +1069,11 @@ public class gameManager : MonoBehaviour {
 
 	}
 
+
+
 	public void combatPhase(){
 		for(int i = 0; i < ppl.Length; i++){
-			Debug.Log("player "+i+"'s action index- "+ppl[i,0]);
+			Debug.Log("player index"+i+"'s action index- "+ppl[i,0]);
 		}
 
 		int highestPriorityUser = -1;
@@ -954,11 +1083,12 @@ public class gameManager : MonoBehaviour {
 		int lastPriorityUser = -1;
 
 		for(int i = 0; i < ppl.Length; i++){
-			Debug.Log("player "+i+"'s action index- "+ppl[i,0]);
+			Debug.Log ("checking user index "+i+" to see their priority");
 
 			if(i ==0)
 			{
 				highestPriorityUser = i;
+
 			}
 			else
 			if(i==1)
@@ -976,8 +1106,7 @@ public class gameManager : MonoBehaviour {
 					secondPriorityUser = i;
 					highestPriorityUser = highestPriorityUser;
 				}
-
-
+			
 			}
 			else
 			if(i==2)
@@ -1051,7 +1180,7 @@ public class gameManager : MonoBehaviour {
 					}
 					
 				}
-				
+			
 			}
 
 			if(i == 4){
@@ -1110,16 +1239,105 @@ public class gameManager : MonoBehaviour {
 					}
 					
 				}
+
 			
 			}
+ }
+		//priority lists which attacks go first. ppl[,] contains the index for each action card. priority contains index of action card being used on player(s)
+		//or users.
+	for(int u = 0; u < users.Length; u++)//check to see if they are defending against anyone
+			{
+				for(int j = 0; j < users.Length; j++)//check to see if anyone is striking anyone
+				{
+					if(u!=j)
+					{
+						if( (users[j].atkUserIndex == u) && (users[j].hand.acArr[ppl[j,0] ].isAllegation()) ) //is user j attacking user u?
+						{//allegation fight
 
-			Debug.Log("1st priority is player index - "+highestPriorityUser);
-			Debug.Log("2nd priority is player index - "+secondPriorityUser);
-			Debug.Log("3rd priority is player index - "+thirdPriorityUser);
-			Debug.Log("4th priority is player index - "+forthPriorityUser);
-			Debug.Log("5th priority is player index - "+lastPriorityUser);
-	   }
+							Debug.Log ("Player "+j+" wants to allegate player "+u);
+							if(users[u].isDefending == true && users[u].usedAction == false)
+							{
+								users[u].usedAction = true;
+								users[j].usedAction = true;
+							
+							Debug.Log ("Player "+u+" defended against allegation from player "+j);
+							}
+							else
+							if(users[u].isDefending == true && users[u].usedAction == true)
+							{	
+							if(users[u].taunted == false)
+							{
+								Debug.Log ("Player "+u+" got allegated by player "+j);
+								users[u].receiveDmg(1);
+							}
+							else
+								if(users[u].taunted == true)
+							{
+								Debug.Log ("Player "+u+" got allegated by player "+j+ " and received taunt bonus damage");
+								users[u].receiveDmg(2);
+								users[u].taunted = false;
+							}
+							
+							users[j].usedAction = true;
+							}
+							else
+							if(users[u].isDefending == false)
+							{
+								Debug.Log ("Player "+u+" got allegated without defending by player "+j);
 
+							if(users[u].taunted == false)
+							{
+								Debug.Log ("Allegation damage is 1");
+								users[u].receiveDmg(1);
+							}
+							else
+								if(users[u].taunted == true)
+							{
+								Debug.Log ("Allegation damage is 2");
+								users[u].taunted = false;
+								users[u].receiveDmg(2);
+
+							}
+							
+							users[j].usedAction = true;
+
+							}
+						}
+						
+						if( (users[j].atkUserIndex == u) && (users[j].hand.acArr[ppl[j,0] ].isTaunt()) ) //is user j attacking user u?
+						{
+						Debug.Log ("Player "+j+" wants to taunt player "+u);
+							if(users[u].isDefending == true && users[u].usedAction == false)
+							{
+							Debug.Log ("Player "+u+" defended against taunt from player "+j);
+								users[u].usedAction = true;
+								users[j].usedAction = true;
+							}
+							else
+							if(users[u].isDefending == true && users[u].usedAction == true)
+							{	
+								Debug.Log ("Player "+u+" got taunted by player "+j);
+								users[u].taunted = true;
+								users[j].usedAction = true;
+							}
+							else
+							if(users[u].isDefending == false)
+							{	
+								Debug.Log ("Player "+u+" got taunted without defending by player "+j);
+								users[u].taunted = true;
+								users[j].usedAction = true;
+							}
+						}
+
+
+					}
+				}
+
+			}
+
+		for(int i = 0; i < users.Length; i++){
+			users[i].newRoundStatReset();
+		}
 	}
 
 	public void calcNewSuspicionPt(Player p, int index){ //reduce points
