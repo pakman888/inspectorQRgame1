@@ -303,6 +303,7 @@ public class gameManager : MonoBehaviour {
 				Debug.Log ("blame target user is: "+singleTargetVictim);
 				users[turn].atkUserIndex = singleTargetVictim;
 				users[singleTargetVictim].multiplier+=1;
+				Debug.Log ("current multiplier for user "+singleTargetVictim+": "+users[singleTargetVictim].multiplier);
 			}
 			else
 			if(users[turn].hand.acArr[actIndex].isAllegation() || users[turn].hand.acArr[actIndex].isTaunt())
@@ -319,18 +320,20 @@ public class gameManager : MonoBehaviour {
 			if(users[turn].hand.acArr[actIndex].isHeal == true)
 			{
 				users[turn].isHealing = true;
-				Debug.Log ("snitching everyone");
+				users[turn].usedHealSnitchDef = false;
+				users[turn].hand.acArr[ppl[turn,0]].limit -=1;
+				Debug.Log ("single heal");
 			}
 
 			if(users[turn].hand.acArr[actIndex].isBlock == true)
 			{
 				users[turn].isDefending = true;
-				Debug.Log ("snitching everyone");
+				Debug.Log ("single block ");
 			}
 
 			if(users[turn].hand.acArr[actIndex].isSnitch() == true)
 			{
-				Debug.Log ("snitching everyone");
+				Debug.Log ("snitch everyone");
 			}
 			
 		}
@@ -860,7 +863,7 @@ public class gameManager : MonoBehaviour {
 					GameObject.Find ("playerSelect4").GetComponent<UIButton>().defaultColor= new Color(62,255,0,255);
 			GameObject.Find("playerSelect4").GetComponent<UIButton>().UpdateColor(false,true);
 			}*/
-
+			singleTargetVictim = turn;
 		}
 
 
@@ -868,6 +871,7 @@ public class gameManager : MonoBehaviour {
 
 	public void blockUser(){
 		singleTarget = false;
+		singleTargetVictim = turn;
 	}
 
 	public void checkTargetUsers(int act){
@@ -918,6 +922,8 @@ public class gameManager : MonoBehaviour {
 				singleTargetVictim = 0;
 				resetTargetColor();
 				users[turn].atkUserIndex = int.Parse (GameObject.Find("playerSelect1").GetComponentInChildren<UILabel>().text);
+				users[int.Parse (GameObject.Find("playerSelect2").GetComponentInChildren<UILabel>().text)].receiveUserIndexAttack = turn;
+
 				Debug.Log("Player "+ turn+ "will strike player : "+int.Parse (GameObject.Find("playerSelect1").GetComponentInChildren<UILabel>().text));
 				GameObject.Find ("playerSelect1").GetComponent<UIButton>().defaultColor= Color.red;
 				GameObject.Find("playerSelect1").GetComponent<UIButton>().UpdateColor(true,true);
@@ -936,6 +942,7 @@ public class gameManager : MonoBehaviour {
 				singleTargetVictim = 1;
 				resetTargetColor();
 				users[turn].atkUserIndex = int.Parse (GameObject.Find("playerSelect2").GetComponentInChildren<UILabel>().text);
+				users[int.Parse (GameObject.Find("playerSelect2").GetComponentInChildren<UILabel>().text)].receiveUserIndexAttack = turn;
 				Debug.Log("Player "+ turn+ "will strike player : "+int.Parse (GameObject.Find("playerSelect2").GetComponentInChildren<UILabel>().text));
 				GameObject.Find ("playerSelect2").GetComponent<UIButton>().defaultColor= Color.red;
 				GameObject.Find("playerSelect2").GetComponent<UIButton>().UpdateColor(true,true);
@@ -952,6 +959,8 @@ public class gameManager : MonoBehaviour {
 				singleTargetVictim = 2;
 				resetTargetColor();
 				users[turn].atkUserIndex = int.Parse (GameObject.Find("playerSelect3").GetComponentInChildren<UILabel>().text);
+				users[int.Parse (GameObject.Find("playerSelect2").GetComponentInChildren<UILabel>().text)].receiveUserIndexAttack = turn;
+
 				Debug.Log("Player "+ turn+ "will strike player : "+int.Parse (GameObject.Find("playerSelect3").GetComponentInChildren<UILabel>().text));
 				GameObject.Find ("playerSelect3").GetComponent<UIButton>().defaultColor= Color.red;
 				GameObject.Find("playerSelect3").GetComponent<UIButton>().UpdateColor(true,true);
@@ -967,6 +976,8 @@ public class gameManager : MonoBehaviour {
 				singleTargetVictim = 3;
 				resetTargetColor();
 			users[turn].atkUserIndex = int.Parse (GameObject.Find("playerSelect4").GetComponentInChildren<UILabel>().text);
+				users[int.Parse (GameObject.Find("playerSelect2").GetComponentInChildren<UILabel>().text)].receiveUserIndexAttack = turn;
+
 				Debug.Log("Player "+ turn+ "will strike player : "+int.Parse (GameObject.Find("playerSelect4").GetComponentInChildren<UILabel>().text));
 				GameObject.Find ("playerSelect4").GetComponent<UIButton>().defaultColor= Color.red;
 				GameObject.Find("playerSelect4").GetComponent<UIButton>().UpdateColor(true,true);
@@ -981,7 +992,9 @@ public class gameManager : MonoBehaviour {
 			{
 				singleTargetVictim = 4;
 				resetTargetColor();
+				users[int.Parse (GameObject.Find("playerSelect2").GetComponentInChildren<UILabel>().text)].receiveUserIndexAttack = turn;
 				users[turn].atkUserIndex = int.Parse (GameObject.Find("playerSelect5").GetComponentInChildren<UILabel>().text);
+
 				Debug.Log("Player "+ turn+ "will strike player : "+int.Parse (GameObject.Find("playerSelect5").GetComponentInChildren<UILabel>().text));
 				GameObject.Find ("playerSelect5").GetComponent<UIButton>().defaultColor= Color.red;
 				GameObject.Find("playerSelect5").GetComponent<UIButton>().UpdateColor(true,true);
@@ -1042,7 +1055,7 @@ public class gameManager : MonoBehaviour {
 
 	public void pickAction5(){//defend
 
-			actIndex = int.Parse(GameObject.Find ("btn50").GetComponentInChildren<UILabel>().text);
+		actIndex = int.Parse(GameObject.Find ("btn50").GetComponentInChildren<UILabel>().text);
 		Debug.Log(actIndex);
 			users[turn].hand.acArr[actIndex].showCard();
 		checkTargetUsers(actIndex);
@@ -1073,9 +1086,9 @@ public class gameManager : MonoBehaviour {
 
 	public void combatPhase(){
 		for(int i = 0; i < ppl.Length; i++){
-			Debug.Log("player index"+i+"'s action index- "+ppl[i,0]);
+			Debug.Log("player index "+i+"'s action index- "+ppl[i,0]+" targetting user index "+users[i].atkUserIndex);
 		}
-
+		/*
 		int highestPriorityUser = -1;
 		int secondPriorityUser = -1;
 		int thirdPriorityUser = -1;
@@ -1242,39 +1255,44 @@ public class gameManager : MonoBehaviour {
 
 			
 			}
- }
+ }*/
 		//priority lists which attacks go first. ppl[,] contains the index for each action card. priority contains index of action card being used on player(s)
 		//or users.
 	for(int u = 0; u < users.Length; u++)//check to see if they are defending against anyone
-			{
+	{//allegation and taunt should work.
 				for(int j = 0; j < users.Length; j++)//check to see if anyone is striking anyone
 				{
 					if(u!=j)
 					{
-						if( (users[j].atkUserIndex == u) && (users[j].hand.acArr[ppl[j,0] ].isAllegation()) ) //is user j attacking user u?
+
+						if( (users[j].atkUserIndex == u) && (users[j].hand.acArr[ppl[j,0] ].isAllegation()) ) //is user j allegating user u?
 						{//allegation fight
 
-							Debug.Log ("Player "+j+" wants to allegate player "+u);
-							if(users[u].isDefending == true && users[u].usedAction == false)
+				//			Debug.Log ("Player "+j+" wants to allegate player "+u);
+							if(thirdPartyTaunt(j) == true)
+							{
+								users[j].usedAction = true;
+							}
+							else
+							if((users[u].isDefending == true && users[u].usedAction == false) )
 							{
 								users[u].usedAction = true;
 								users[j].usedAction = true;
-							
-							Debug.Log ("Player "+u+" defended against allegation from player "+j);
+								Debug.Log ("Player "+u+" defended against allegation from player "+j);
 							}
 							else
-							if(users[u].isDefending == true && users[u].usedAction == true)
+							if( (users[u].isDefending == true && users[u].usedAction == true) && thirdPartyTaunt(j) == false)
 							{	
-							if(users[u].taunted == false)
-							{
-								Debug.Log ("Player "+u+" got allegated by player "+j);
-								users[u].receiveDmg(1);
-							}
+								if(users[u].taunted == false)
+								{
+									Debug.Log ("Player "+u+" got allegated by player "+j);
+									users[u].receiveDmg(1);
+								}
 							else
-								if(users[u].taunted == true)
+							if(users[u].taunted == true)
 							{
-								Debug.Log ("Player "+u+" got allegated by player "+j+ " and received taunt bonus damage");
-								users[u].receiveDmg(2);
+								Debug.Log ("Player "+u+" got allegated by player "+j+ " and received 4 damage");
+								users[u].receiveDmg(4);
 								users[u].taunted = false;
 							}
 							
@@ -1285,28 +1303,42 @@ public class gameManager : MonoBehaviour {
 							{
 								Debug.Log ("Player "+u+" got allegated without defending by player "+j);
 
-							if(users[u].taunted == false)
-							{
-								Debug.Log ("Allegation damage is 1");
-								users[u].receiveDmg(1);
+								if(users[u].taunted == false)
+								{
+								//Debug.Log ("Allegation damage is 1");
+									users[u].receiveDmg(1);
+								}
+								else
+									if(users[u].taunted == true)
+								{
+				//					Debug.Log ("Allegation damage is 4");
+									users[u].taunted = false;
+									users[u].receiveDmg(4);
+
+								}
+								
+								if(users[u].isHealing == true && users[u].usedAction == false){
+								Debug.Log ("allegating user index "+u+" for healing and not initating it yet");
+								users[u].usedAction = true;
+
 							}
 							else
-								if(users[u].taunted == true)
-							{
-								Debug.Log ("Allegation damage is 2");
-								users[u].taunted = false;
-								users[u].receiveDmg(2);
+							if(users[u].isHealing == true && users[u].usedAction == true){
+								Debug.Log ("allegating user index "+u+" for attempted healing");
+								users[u].usedAction = true;
+								users[u].receiveDmg(1);
+							}
+								users[j].usedAction = true;
 
 							}
-							
-							users[j].usedAction = true;
 
-							}
+
+
 						}
 						
-						if( (users[j].atkUserIndex == u) && (users[j].hand.acArr[ppl[j,0] ].isTaunt()) ) //is user j attacking user u?
-						{
-						Debug.Log ("Player "+j+" wants to taunt player "+u);
+						if( (users[j].atkUserIndex == u) && (users[j].hand.acArr[ppl[j,0] ].isTaunt() &&  users[j].usedAction == false) ) 
+						{//is user U being taunted?thirdPartyTaunt(j)
+				//			Debug.Log ("Player "+j+" wants to taunt player "+u);
 							if(users[u].isDefending == true && users[u].usedAction == false)
 							{
 							Debug.Log ("Player "+u+" defended against taunt from player "+j);
@@ -1323,20 +1355,153 @@ public class gameManager : MonoBehaviour {
 							else
 							if(users[u].isDefending == false)
 							{	
+
+								if(users[u].isHealing == true && users[u].usedAction == false)
+								{
+									Debug.Log ("negated u's heal with a taunt");
+									users[u].usedAction = true;
+								}
+								else
+								if(users[u].isHealing == true && users[u].usedAction == true)
+								{
+									Debug.Log ("taunted u who healed.");
+									users[u].taunted = true;
+									users[j].usedAction = true;
+								}
+								else{
 								Debug.Log ("Player "+u+" got taunted without defending by player "+j);
 								users[u].taunted = true;
-								users[j].usedAction = true;
+								users[j].usedAction = true;}
+							}
+						}
+						
+					if( users[j].hand.acArr[ppl[j,0] ].isBlame() && thirdPartyTaunt(j) == true ) //is user j blaming user u?
+					{//blame fight reduction
+
+						Debug.Log ("Player index "+j+" got taunted and player index "+u+" loses 1 multiplier");
+						users[users[j].atkUserIndex].multiplier-=1;
+						Debug.Log ("player index "+u+"'s current multiplier: "+users[users[j].atkUserIndex].multiplier);
+					}
+					//Debug.Log (users[u].multiplier +" people blammed user index "+u);
+					if(users[j].hand.acArr[ppl[j,0] ].isSnitch() && users[j].usedAction == false)
+					{																			// j snitches on everyone 
+
+						if(multipleSnitch() == false)
+						{
+							Debug.Log ("only user index "+j+" is snitching.");
+							for(int x = 0; x < users.Length; x++)
+							{
+								if(x!= j){
+
+									if(users[x].isDefending == false ){
+
+
+									//healing is true
+									if(users[x].isHealing == true )
+										{
+											if(users[x].usedHealSnitchDef == true)
+											{
+												Debug.Log ("user index "+x+" was taunted and damaged from snitch.");
+												users[x].receiveDmg(3);
+											}
+											else
+												if(users[x].usedHealSnitchDef ==false && thirdPartyTaunt(x)==false )
+											{
+												Debug.Log ("user index "+x+" used their defend and isn't damaged from snitch.");
+												users[x].usedHealSnitchDef = true;
+											}
+											else
+												if(users[x].usedHealSnitchDef ==false && thirdPartyTaunt(x)==true )
+											{
+												Debug.Log ("user index "+x+" was taunted and was damaged from snitch.");
+												users[x].receiveDmg(3);
+											}
+
+										}
+										else
+										if(users[x].isHealing == false){
+											Debug.Log ("user index "+x+" isn't healing and is damaged from snitch.");
+											users[x].receiveDmg(3);
+										}
+								}
+								else
+								if(users[x].isDefending == true){
+									if(users[x].usedAction == false && thirdPartyTaunt(x) == false)
+									{
+										Debug.Log ("user index "+x+" defended from snitch.");
+										users[x].usedAction = true;
+									}
+									else
+									if(users[x].usedAction == false && thirdPartyTaunt(x) == true)
+									{
+										Debug.Log ("user index "+x+" was taunted and damaged from snitch.");
+										users[x].usedAction = true;
+									}
+									else
+									if(users[x].usedAction ==true )
+									{
+										Debug.Log ("user index "+x+" used their defend and is damaged from snitch.");
+										users[x].receiveDmg(3);
+									}
+										
+								}
+							}
+						}
+						}
+						else
+						if(multipleSnitch()==true)
+						{
+							Debug.Log ("user index "+j+" isn't the only one snitching.");	
+							for(int x = 0; x < users.Length; x++)
+							{
+								if(x!= j && users[x].hand.acArr[ppl[x,0]].isSnitch() == true){
+									Debug.Log ("user index "+x+" is damaged from snitch.");
+									users[x].receiveDmg(3);
+								}
+							}
+
+						}
+						users[j].usedAction = true;
+						// end of j snitches on everyone 
+					}
+
+					//what if u is healing
+					//too many problems... need to fix them!
+					/*if(users[u].hand.acArr[ppl[u,0]].isHeal == true && users[u].usedAction == false){
+						Debug.Log ("user index "+u+" didn't use heal and they want to heal.");
+						if(users[u].receiveUserIndexAttack == j)
+						{
+							Debug.Log ("j wants to hit u");
+
+							if(users[u].taunted == true){
+								Debug.Log ("j taunted u");
+							}
+
+							if(users[j].hand.acArr[ppl[j,0]].isAllegation())
+							{
+								Debug.Log ("j allegated u");
+							}
+
+							if(users[u].multiplier > 1)
+							{
+								Debug.Log ("u is being blamed");
 							}
 						}
 
+						//defend is done
+					}*/
 
-					}
+				
+
 				}
 
-			}
 
-		for(int i = 0; i < users.Length; i++){
-			users[i].newRoundStatReset();
+			}
+			//need to inflict blame multiplier damage to everyone.
+			for(int i = 0; i < users.Length; i++){
+				//Debug.Log("User "+i+" final multiplier- "+users[i].multiplier);
+				users[i].newRoundStatReset();
+			}
 		}
 	}
 
@@ -1361,6 +1526,92 @@ public class gameManager : MonoBehaviour {
 		pcw.enabled = false;
 		
 	}
+
+	public bool thirdPartyTaunt(int userIndex){
+		bool foo = false;
+		for(int i = 0; i < users.Length;i++){
+			if(i!= userIndex){
+				if( users[i].hand.acArr[ppl[i,0]].isTaunt() && users[i].atkUserIndex == userIndex ) //checking if attacker is being taunted
+				{
+					Debug.Log ("User index "+i+" prevented player "+userIndex+ " from attacking player "+users[userIndex].atkUserIndex);
+					users[i].usedAction = true;
+					foo= true;
+
+				}
+			}
+
+			if(foo == true)
+				break;
+		}
+		return foo;
+	}
+
+
+	public bool negateHeal(int userIndex){
+		bool foo = false;
+		for(int i = 0; i < users.Length;i++){
+			if(i!= userIndex){
+				if((users[userIndex].hand.acArr[ppl[userIndex,0]].isHeal == true) &&  (users[i].atkUserIndex == userIndex) )
+				    //checking if attacker is being taunted
+				{
+					Debug.Log ("user index "+i+" is targetting player index "+userIndex);
+					if(users[i].hand.acArr[ppl[i,0]].isBlame() == true){
+						Debug.Log ("User index "+i+" prevented player "+userIndex+ " from healing with a blame");
+						users[i].usedAction = true;
+						users[userIndex].usedAction = true;
+						return true;
+					}
+
+					if(users[i].hand.acArr[ppl[i,0]].isAllegation() == true){
+						Debug.Log ("User index "+i+" prevented player "+userIndex+ " from healing with an allegation");
+						users[i].usedAction = true;
+						users[userIndex].usedAction = true;
+						return true;
+					}
+
+					if(users[i].hand.acArr[ppl[i,0]].isTaunt() == true)
+						Debug.Log ("User index "+i+" prevented player "+userIndex+ " from healing with a taunt");
+						users[i].usedAction = true;
+						users[userIndex].usedAction = true;
+						return true;
+				}
+			}
+			
+		
+		}
+		return foo;
+	}
+
+
+	public bool multipleSnitch() // if more than 1 person snitches, then everyone gains 3 suspicion pts
+	{
+		int count = 0;
+		for(int i = 0; i < users.Length; i++)
+		{
+			if(users[i].hand.acArr[ppl[i,0]].isSnitch())
+			{
+				count++;
+			}
+		}
+
+		return (count>1);
+	}
+
+
+	public bool singleSnitch(){//this is to let ppl who try to heal block a snitch attack
+		int count = 0;
+		for(int i = 0; i < users.Length; i++)
+		{
+			if(users[i].hand.acArr[ppl[i,0]].isSnitch())
+			{
+				count++;
+			}
+		}
+		
+		return (count==1);
+	}
+
+
 
 	public void ClickProfile1(){
 

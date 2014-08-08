@@ -17,8 +17,7 @@ public class Player : MonoBehaviour {
 	public bool isDefending;
 	public bool taunted;
 	public bool usedAction;
-
-
+	public bool usedHealSnitchDef;
 	// Use this for initialization
 	public Player() {
 		taunted = false;
@@ -32,6 +31,7 @@ public class Player : MonoBehaviour {
 		hand = new DeckHand();
 		isHealing = false;
 		isDefending = false;
+		usedHealSnitchDef = true;
 	}
 
 
