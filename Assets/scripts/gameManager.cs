@@ -721,38 +721,38 @@ public class gameManager : MonoBehaviour {
 			if(turn == 0){
 				Debug.Log("p2,p3,p4,p5 will be damaged from snitch");
 				GameObject.Find ("playerSelect2").GetComponent<UIButton>().defaultColor= Color.red;
-					GameObject.Find("playerSelect2").GetComponent<UIButton>().UpdateColor(true,true);
+			GameObject.Find("playerSelect2").GetComponent<UIButton>().UpdateColor(false,true);
 				GameObject.Find ("playerSelect3").GetComponent<UIButton>().defaultColor= Color.red;
-					GameObject.Find("playerSelect3").GetComponent<UIButton>().UpdateColor(true,true);
+			GameObject.Find("playerSelect3").GetComponent<UIButton>().UpdateColor(false,true);
 				GameObject.Find ("playerSelect4").GetComponent<UIButton>().defaultColor= Color.red;
-					GameObject.Find("playerSelect4").GetComponent<UIButton>().UpdateColor(true,true);
+			GameObject.Find("playerSelect4").GetComponent<UIButton>().UpdateColor(false,true);
 				GameObject.Find ("playerSelect5").GetComponent<UIButton>().defaultColor= Color.red;
-					GameObject.Find("playerSelect5").GetComponent<UIButton>().UpdateColor(true,true);
+			GameObject.Find("playerSelect5").GetComponent<UIButton>().UpdateColor(false,true);
 			}
 
 			if(turn ==1)
 				Debug.Log("p1,p3,p4,p5 will be damaged from snitch");
 			{
 				GameObject.Find ("playerSelect1").GetComponent<UIButton>().defaultColor= Color.red;
-					GameObject.Find("playerSelect1").GetComponent<UIButton>().UpdateColor(true,true);
+			GameObject.Find("playerSelect1").GetComponent<UIButton>().UpdateColor(false,true);
 				GameObject.Find ("playerSelect3").GetComponent<UIButton>().defaultColor= Color.red;
-					GameObject.Find("playerSelect3").GetComponent<UIButton>().UpdateColor(true,true);
+			GameObject.Find("playerSelect3").GetComponent<UIButton>().UpdateColor(false,true);
 				GameObject.Find ("playerSelect4").GetComponent<UIButton>().defaultColor= Color.red;
-					GameObject.Find("playerSelect4").GetComponent<UIButton>().UpdateColor(true,true);
+			GameObject.Find("playerSelect4").GetComponent<UIButton>().UpdateColor(false,true);
 				GameObject.Find ("playerSelect5").GetComponent<UIButton>().defaultColor= Color.red;
-					GameObject.Find("playerSelect5").GetComponent<UIButton>().UpdateColor(true,true);
+			GameObject.Find("playerSelect5").GetComponent<UIButton>().UpdateColor(false,true);
 			}
 
 			if(turn == 2){
 				Debug.Log("p1,p2,p4,p5 will be damaged from snitch");
 				GameObject.Find ("playerSelect1").GetComponent<UIButton>().defaultColor= Color.red;
-					GameObject.Find("playerSelect1").GetComponent<UIButton>().UpdateColor(true,true);
+			GameObject.Find("playerSelect1").GetComponent<UIButton>().UpdateColor(false,true);
 				GameObject.Find ("playerSelect2").GetComponent<UIButton>().defaultColor= Color.red;
-					GameObject.Find("playerSelect2").GetComponent<UIButton>().UpdateColor(true,true);
+			GameObject.Find("playerSelect2").GetComponent<UIButton>().UpdateColor(false,true);
 				GameObject.Find ("playerSelect4").GetComponent<UIButton>().defaultColor= Color.red;
-					GameObject.Find("playerSelect4").GetComponent<UIButton>().UpdateColor(true,true);
+			GameObject.Find("playerSelect4").GetComponent<UIButton>().UpdateColor(false,true);
 				GameObject.Find ("playerSelect5").GetComponent<UIButton>().defaultColor= Color.red;
-					GameObject.Find("playerSelect5").GetComponent<UIButton>().UpdateColor(true,true);
+			GameObject.Find("playerSelect5").GetComponent<UIButton>().UpdateColor(false,true);
 			}
 
 			if(turn == 3){
@@ -787,40 +787,44 @@ public class gameManager : MonoBehaviour {
 	public void healUser(){
 		singleTarget = false;
 
-			resetTargetColor();
+		resetTargetColor();
 		if(users[turn].hand.acArr[actIndex].isHeal == true)
 		{	if(turn == 0){
 				Debug.Log("may heal p1");
-				GameObject.Find ("playerSelect1").GetComponent<UIButton>().defaultColor= new Color(62,255,0,255);
-				GameObject.Find("playerSelect1").GetComponent<UIButton>().UpdateColor(true,true);
+				GameObject.Find ("playerSelect1").GetComponent<UIButton>().disabledColor= new Color(62f,255f,0f,255f);
+				GameObject.Find("playerSelect1").GetComponent<UIButton>().UpdateColor(true,false);
+
+				//GameObject.Find ("playerSelect1").GetComponent<UIButton>().defaultColor= Color.black;
+			//	GameObject.Find("playerSelect1").GetComponent<UIButton>().UpdateColor(true,true);
 
 				GameObject.Find ("playerSelect2").GetComponent<UIButton>().defaultColor= Color.black;
-				GameObject.Find("playerSelect2").GetComponent<UIButton>().UpdateColor(true,true);
+				GameObject.Find("playerSelect2").GetComponent<UIButton>().UpdateColor(true,false);
 
 				GameObject.Find ("playerSelect3").GetComponent<UIButton>().defaultColor= Color.black;
-			GameObject.Find("playerSelect3").GetComponent<UIButton>().UpdateColor(true,true);
+				GameObject.Find("playerSelect3").GetComponent<UIButton>().UpdateColor(true,false);
 				GameObject.Find ("playerSelect4").GetComponent<UIButton>().defaultColor= Color.black;
-			GameObject.Find("playerSelect4").GetComponent<UIButton>().UpdateColor(true,true);
+				GameObject.Find("playerSelect4").GetComponent<UIButton>().UpdateColor(true,false);
 
 			GameObject.Find ("playerSelect5").GetComponent<UIButton>().defaultColor= Color.black;
-			GameObject.Find("playerSelect5").GetComponent<UIButton>().UpdateColor(true,true);
+				GameObject.Find("playerSelect5").GetComponent<UIButton>().UpdateColor(true,false);
 			}
 			
 			else
 			if(turn ==1)
-				Debug.Log("may heal p2");
+				
 			{
+				Debug.Log("may heal p2");
 				GameObject.Find ("playerSelect1").GetComponent<UIButton>().defaultColor= Color.black;
-			GameObject.Find("playerSelect1").GetComponent<UIButton>().UpdateColor(true,true);
+				GameObject.Find("playerSelect1").GetComponent<UIButton>().UpdateColor(false,true);
 				GameObject.Find ("playerSelect2").GetComponent<UIButton>().defaultColor= new Color(62,255,0,255);
-						GameObject.Find("playerSelect2").GetComponent<UIButton>().UpdateColor(true,true);
+				GameObject.Find("playerSelect2").GetComponent<UIButton>().UpdateColor(false,true);
 				GameObject.Find ("playerSelect3").GetComponent<UIButton>().defaultColor= Color.black;
-			GameObject.Find("playerSelect3").GetComponent<UIButton>().UpdateColor(true,true);
+				GameObject.Find("playerSelect3").GetComponent<UIButton>().UpdateColor(false,true);
 				GameObject.Find ("playerSelect4").GetComponent<UIButton>().defaultColor= Color.black;
-			GameObject.Find("playerSelect4").GetComponent<UIButton>().UpdateColor(true,true);
+				GameObject.Find("playerSelect4").GetComponent<UIButton>().UpdateColor(false,true);
 				GameObject.Find ("playerSelect5").GetComponent<UIButton>().defaultColor= Color.black;
-			GameObject.Find("playerSelect5").GetComponent<UIButton>().UpdateColor(true,true);
-		}/*
+				GameObject.Find("playerSelect5").GetComponent<UIButton>().UpdateColor(false,true);
+		}
 		else
 			if(turn == 2){
 				Debug.Log("may heal p3");
@@ -851,7 +855,8 @@ public class gameManager : MonoBehaviour {
 			GameObject.Find("playerSelect5").GetComponent<UIButton>().UpdateColor(false,true);
 			}
 			else
-			if(turn == 4){Debug.Log("may heal p5");
+			if(turn == 4){
+				Debug.Log("may heal p5");
 				GameObject.Find ("playerSelect1").GetComponent<UIButton>().defaultColor= Color.black;
 			GameObject.Find("playerSelect1").GetComponent<UIButton>().UpdateColor(false,true);
 				GameObject.Find ("playerSelect2").GetComponent<UIButton>().defaultColor= Color.black;
@@ -862,7 +867,7 @@ public class gameManager : MonoBehaviour {
 			GameObject.Find("playerSelect4").GetComponent<UIButton>().UpdateColor(false,true);
 					GameObject.Find ("playerSelect4").GetComponent<UIButton>().defaultColor= new Color(62,255,0,255);
 			GameObject.Find("playerSelect4").GetComponent<UIButton>().UpdateColor(false,true);
-			}*/
+			}
 			singleTargetVictim = turn;
 		}
 
