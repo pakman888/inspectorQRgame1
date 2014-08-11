@@ -1249,181 +1249,12 @@ public class gameManager : MonoBehaviour{
 		for(int i = 0; i < ppl.Length; i++){
 			Debug.Log("player index "+i+"'s action index- "+ppl[i,0]+" targetting user index "+users[i].atkUserIndex);
 		}
-		/*
-		int highestPriorityUser = -1;
-		int secondPriorityUser = -1;
-		int thirdPriorityUser = -1;
-		int forthPriorityUser = -1;
-		int lastPriorityUser = -1;
 
-		for(int i = 0; i < ppl.Length; i++){
-			Debug.Log ("checking user index "+i+" to see their priority");
-
-			if(i ==0)
-			{
-				highestPriorityUser = i;
-
-			}
-			else
-			if(i==1)
-			{
-				if(comparePriorities(users[i].hand.acArr[ ppl[i,0] ].priority, users[highestPriorityUser].hand.acArr[ ppl[highestPriorityUser,0] ].priority) == 1)
-				{
-					secondPriorityUser = highestPriorityUser;
-					highestPriorityUser = i;
-
-				}
-				else
-					if(comparePriorities(users[i].hand.acArr[ ppl[i,0] ].priority, users[highestPriorityUser].hand.acArr[ ppl[highestPriorityUser,0] ].priority) == -1
-					   || comparePriorities(users[i].hand.acArr[ ppl[i,0] ].priority, users[highestPriorityUser].hand.acArr[ ppl[highestPriorityUser,0] ].priority) == 0)
-				{
-					secondPriorityUser = i;
-					highestPriorityUser = highestPriorityUser;
-				}
-			
-			}
-			else
-			if(i==2)
-			{ // i > top
-				if(comparePriorities(users[i].hand.acArr[ ppl[i,0] ].priority, users[highestPriorityUser].hand.acArr[ ppl[highestPriorityUser,0] ].priority) == 1)
-				{
-					thirdPriorityUser = secondPriorityUser;
-					secondPriorityUser = highestPriorityUser;
-					highestPriorityUser = i;
-					
-				}// i < top or i == top
-				else
-					if(comparePriorities(users[i].hand.acArr[ ppl[i,0] ].priority, users[highestPriorityUser].hand.acArr[ ppl[highestPriorityUser,0] ].priority) == -1 ||
-					   comparePriorities(users[i].hand.acArr[ ppl[i,0] ].priority, users[highestPriorityUser].hand.acArr[ ppl[highestPriorityUser,0] ].priority) == 0   )
-				{
-					if(comparePriorities(users[i].hand.acArr[ ppl[i,0] ].priority, users[secondPriorityUser].hand.acArr[ ppl[secondPriorityUser,0] ].priority) == 1 )
-					{//if i > 2nd
-						thirdPriorityUser = secondPriorityUser;
-						secondPriorityUser = i;
-					}
-					else
-						if(comparePriorities(users[i].hand.acArr[ ppl[i,0] ].priority, users[secondPriorityUser].hand.acArr[ ppl[secondPriorityUser,0] ].priority) == -1
-						   || comparePriorities(users[i].hand.acArr[ ppl[i,0] ].priority, users[secondPriorityUser].hand.acArr[ ppl[secondPriorityUser,0] ].priority) == 0)
-					{
-						//if i < 2nd or i == 2nd
-						thirdPriorityUser = i;
-					}
-
-				}
-
-			}
-
-			if(i==3)
-			{//i > top
-				if(comparePriorities(users[i].hand.acArr[ ppl[i,0] ].priority, users[highestPriorityUser].hand.acArr[ ppl[highestPriorityUser,0] ].priority) == 1)
-				{
-					forthPriorityUser = thirdPriorityUser;
-					thirdPriorityUser = secondPriorityUser;
-					secondPriorityUser = highestPriorityUser;
-					highestPriorityUser = i;
-					
-				}
-				else//i< top or i== top
-					if(comparePriorities(users[i].hand.acArr[ ppl[i,0] ].priority, users[highestPriorityUser].hand.acArr[ ppl[highestPriorityUser,0] ].priority) == -1 ||
-					   comparePriorities(users[i].hand.acArr[ ppl[i,0] ].priority, users[highestPriorityUser].hand.acArr[ ppl[highestPriorityUser,0] ].priority) == 0   )
-				{
-					//if i> 2nd
-					if(comparePriorities(users[i].hand.acArr[ ppl[i,0] ].priority, users[secondPriorityUser].hand.acArr[ ppl[secondPriorityUser,0] ].priority) == 1)
-					{
-						forthPriorityUser = thirdPriorityUser;
-						thirdPriorityUser = secondPriorityUser;
-						secondPriorityUser = i;
-						
-					}
-					else//if i< 2nd or i == 2nd
-						if(comparePriorities(users[i].hand.acArr[ ppl[i,0] ].priority, users[secondPriorityUser].hand.acArr[ ppl[secondPriorityUser,0] ].priority) == -1 ||
-						   comparePriorities(users[i].hand.acArr[ ppl[i,0] ].priority, users[secondPriorityUser].hand.acArr[ ppl[secondPriorityUser,0] ].priority) == 0   )
-					{//if i > 3rd
-						if(comparePriorities(users[i].hand.acArr[ ppl[i,0] ].priority, users[thirdPriorityUser].hand.acArr[ ppl[thirdPriorityUser,0] ].priority) == 1 )
-						{
-							forthPriorityUser = thirdPriorityUser;
-							thirdPriorityUser = i;
-						}//if i <=3rd 
-						if(comparePriorities(users[i].hand.acArr[ ppl[i,0] ].priority, users[thirdPriorityUser].hand.acArr[ ppl[thirdPriorityUser,0] ].priority) == -1
-						   || comparePriorities(users[i].hand.acArr[ ppl[i,0] ].priority, users[thirdPriorityUser].hand.acArr[ ppl[thirdPriorityUser,0] ].priority) == 0)
-						{
-							
-							forthPriorityUser = i;
-						}
-						
-					}
-					
-				}
-			
-			}
-
-			if(i == 4){
-			
-			
-				if(comparePriorities(users[i].hand.acArr[ ppl[i,0] ].priority, users[highestPriorityUser].hand.acArr[ ppl[highestPriorityUser,0] ].priority) == 1)
-				{
-					lastPriorityUser = forthPriorityUser;
-					forthPriorityUser = thirdPriorityUser;
-					thirdPriorityUser = secondPriorityUser;
-					secondPriorityUser = highestPriorityUser;
-					highestPriorityUser = i;
-					
-				}
-				else//i< top or i== top
-					if(comparePriorities(users[i].hand.acArr[ ppl[i,0] ].priority, users[highestPriorityUser].hand.acArr[ ppl[highestPriorityUser,0] ].priority) == -1 ||
-					   comparePriorities(users[i].hand.acArr[ ppl[i,0] ].priority, users[highestPriorityUser].hand.acArr[ ppl[highestPriorityUser,0] ].priority) == 0   )
-				{
-					//if i> 2nd
-					if(comparePriorities(users[i].hand.acArr[ ppl[i,0] ].priority, users[secondPriorityUser].hand.acArr[ ppl[secondPriorityUser,0] ].priority) == 1)
-					{
-						forthPriorityUser = thirdPriorityUser;
-						thirdPriorityUser = secondPriorityUser;
-						secondPriorityUser = i;
-						
-					}
-					else//if i< 2nd or i == 2nd
-						if(comparePriorities(users[i].hand.acArr[ ppl[i,0] ].priority, users[secondPriorityUser].hand.acArr[ ppl[secondPriorityUser,0] ].priority) == -1 ||
-						   comparePriorities(users[i].hand.acArr[ ppl[i,0] ].priority, users[secondPriorityUser].hand.acArr[ ppl[secondPriorityUser,0] ].priority) == 0   )
-					{//if i > 3rd
-						if(comparePriorities(users[i].hand.acArr[ ppl[i,0] ].priority, users[thirdPriorityUser].hand.acArr[ ppl[thirdPriorityUser,0] ].priority) == 1 )
-						{
-							forthPriorityUser = thirdPriorityUser;
-							thirdPriorityUser = i;
-						}
-						else//if i <=3rd 
-							if(comparePriorities(users[i].hand.acArr[ ppl[i,0] ].priority, users[thirdPriorityUser].hand.acArr[ ppl[thirdPriorityUser,0] ].priority) == -1
-							   || comparePriorities(users[i].hand.acArr[ ppl[i,0] ].priority, users[thirdPriorityUser].hand.acArr[ ppl[thirdPriorityUser,0] ].priority) == 0)
-						{
-
-							if(comparePriorities(users[i].hand.acArr[ ppl[i,0] ].priority, users[forthPriorityUser].hand.acArr[ ppl[forthPriorityUser,0] ].priority) == 1 )
-							{
-								lastPriorityUser = forthPriorityUser;
-								forthPriorityUser = i;
-							}
-							else//if i <=3rd 
-								if(comparePriorities(users[i].hand.acArr[ ppl[i,0] ].priority, users[forthPriorityUser].hand.acArr[ ppl[forthPriorityUser,0] ].priority) == -1
-								   || comparePriorities(users[i].hand.acArr[ ppl[i,0] ].priority, users[forthPriorityUser].hand.acArr[ ppl[forthPriorityUser,0] ].priority) == 0)
-							{
-
-								lastPriorityUser = i;
-							}
-
-						}
-						
-					}
-					
-				}
-
-			
-			}
- }*/
-		//priority lists which attacks go first. ppl[,] contains the index for each action card. priority contains index of action card being used on player(s)
-		//or users.
 	for(int u = 0; u < users.Length; u++)//check to see if they are defending against anyone
 	{//allegation and taunt should work.
 				for(int j = 0; j < users.Length; j++)//check to see if anyone is striking anyone
 				{
-					if(u!=j)
+					if(j!=u)
 					{
 
 						if( (users[j].atkUserIndex == u) && (users[j].hand.acArr[ppl[j,0] ].isAllegation()) ) //is user j allegating user u?
@@ -1479,17 +1310,17 @@ public class gameManager : MonoBehaviour{
 								}
 								
 								if(users[u].isHealing == true && users[u].usedAction == false){
-								Debug.Log ("allegating user index "+u+" for healing and they got damaged for it");
-								users[u].receiveDmg(2);
-								users[u].usedAction = true;
+									Debug.Log ("allegating user index "+u+" for healing and they got damaged for it");
+									users[u].receiveDmg(2);
+									users[u].usedAction = true;
 
-							}
-							else
-							if(users[u].isHealing == true && users[u].usedAction == true){
-								Debug.Log ("allegating user index "+u+" for attempted healing");
-								users[u].usedAction = true;
-								users[u].receiveDmg(1);
-							}
+								}
+								else
+								if(users[u].isHealing == true && users[u].usedAction == true){
+									Debug.Log ("allegating user index "+u+" for attempted healing");
+									users[u].usedAction = true;
+									users[u].receiveDmg(1);
+								}
 								users[j].usedAction = true;
 
 							}
@@ -1526,7 +1357,7 @@ public class gameManager : MonoBehaviour{
 								else
 								if(users[u].isHealing == true && users[u].usedAction == true)
 								{
-									Debug.Log ("taunted u who healed.");
+									Debug.Log ("taunted u who tried to.");
 									users[u].taunted = true;
 									users[j].usedAction = true;
 								}
@@ -1645,11 +1476,7 @@ public class gameManager : MonoBehaviour{
 
 			}
 
-			if(users[u].usedAction == false && users[u].hand.acArr[ppl[u,0]].isHeal == true)
-			{
-				users[u].receiveHeal(2);
-				users[u].usedAction = true;
-			}
+
 			//need to inflict blame multiplier damage to everyone.
 
 		}
@@ -1658,8 +1485,10 @@ public class gameManager : MonoBehaviour{
 			Debug.Log("User "+i+" final multiplier- "+users[i].multiplier);
 			users[i].receiveDmg(blameDmg(i,users[i].multiplier));
 			Debug.Log("User "+i+" final damage- "+users[i].suspLvl);
-			users[i].newRoundStatReset();
 			setPlayerPoints(i);
+			users[i].newRoundStatReset();
+
+		//	setCooldownOnCard(i,ppl[i,0])
 		}
 
 
@@ -1679,69 +1508,78 @@ public class gameManager : MonoBehaviour{
 
 	}
 
+	//public void setCooldownOnCard
+
+
 	public void setPlayerPoints(int userIndex){
 
 		Debug.Log("here");
 		switch(userIndex){
 		case 0: 	Debug.Log("uerIndex = 0");
-				for(int i = 0; i < users[userIndex].suspLvl; i++)
-			{Debug.Log("gain alpha");
-					asshole[i].alpha= 2;
+				for(int i = 0; i < users[userIndex].suspLvl; i++)//gain
+				{	Debug.Log("gain dept");
+				asshole[i].depth= 2;
 				}
 				
-				for(int j = users[userIndex].suspLvl; j < asshole.Length;j++)
-				{
-					asshole[j].alpha= -3;
+				for(int j = users[userIndex].suspLvl-1; j < asshole.Length;j++)//lose
+			{
+				Debug.Log (userIndex+" is adjusting health loss index->" +j);
+				asshole[j].depth= -3;
 				}
 				; break;
+
 		case 1: Debug.Log("uerIndex = 1");
-				for(int i = 0; i < users[userIndex].suspLvl; i++)
+				for(int i = 0; i < users[userIndex].suspLvl-1; i++)//gain
 				{
-					asshole2[i].alpha= 2;
+				asshole2[i].depth= 2;
 				}
 				
-				for(int j = users[userIndex].suspLvl; j < asshole.Length;j++)
-				{
-					asshole2[j].alpha= -3;
+			for(int j = users[userIndex].suspLvl-1; j < asshole2.Length;j++)//lose
+			{Debug.Log (userIndex+" is adjusting health index->" +j);
+				asshole2[j].depth= -3;
 				}
 				; break;
+
 		case 2: Debug.Log("uerIndex = 2");
-				for(int i = 0; i < users[userIndex].suspLvl; i++)
-				{
-					asshole2[i].alpha= 2;
+				for(int i = 0; i < users[userIndex].suspLvl; i++)//gain
+			{Debug.Log("gain suspicion index"+ i);
+				asshole2[i].depth= 2;
 				}
 				
-				for(int j = users[userIndex].suspLvl; j < asshole.Length;j++)
-				{
-					asshole2[j].alpha= -3;
+				for(int j = users[userIndex].suspLvl-1; j < asshole2.Length;j++)//lose
+			{Debug.Log (userIndex+" is adjusting health index->" +j);
+				asshole2[j].depth= -3;
 				}
 				; break;
 
 		case 3: Debug.Log("uerIndex = 3");
-			for(int i = 0; i < users[userIndex].suspLvl; i++)
+			for(int i = 0; i < users[userIndex].suspLvl; i++)//gain
 			{
-				asshole3[i].alpha= 2;
+				asshole3[i].depth= 2;
 			}
 			
-			for(int j = users[userIndex].suspLvl; j < asshole.Length;j++)
-			{
-				asshole3[j].alpha= -3;
+			for(int j = users[userIndex].suspLvl-1; j < asshole3.Length;j++)//lose
+			{Debug.Log (userIndex+" is adjusting health index->" +j);
+				asshole3[j].depth= -3;
 			}
 			; break;
+
 		case 4: Debug.Log("uerIndex = 4");
-			for(int i = 0; i < users[userIndex].suspLvl; i++)
+			for(int i = 0; i < users[userIndex].suspLvl; i++)//gain
 			{
-				asshole4[i].alpha= 2;
+				asshole4[i].depth= 2;
 			}
 			
-			for(int j = users[userIndex].suspLvl; j < asshole.Length;j++)
-			{
-				asshole4[j].alpha= -3;
+			for(int j = users[userIndex].suspLvl-1; j < asshole4.Length;j++)//lose
+			{Debug.Log (userIndex+" is adjusting health index->" +j);
+				asshole4[j].depth= -3;
 			}
 			; break;
 		default: ;break;
 		}
 	}
+
+
 
 
 	public int blameDmg(int userIndex, int m)
