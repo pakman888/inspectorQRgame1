@@ -40,7 +40,7 @@ public class Player : MonoBehaviour {
 		atkUserIndex = -1;
 		actionCardIndex = -1;
 		multiplier = 0;
-		hand = new DeckHand();
+		//hand = new DeckHand();
 		isHealing = false;
 		isDefending = false;
 		taunted = false;
