@@ -30,6 +30,7 @@ public class actionCard  {
 
 	public int suspicionDmg; //>0 means atk, <0 means heal, 0 means ineffective
 	public int cooldown;
+	public int cdRemain;
 	public int limit;
 
 	public int priority;
@@ -46,7 +47,7 @@ public class actionCard  {
 		isBlock = false;
 		actionSuccessful = false;
 		suspicionDmg = 0;
-
+		cdRemain = 0;
 	}
 	
 	public void setActionCard(bool isA, bool isD, bool isRAC,bool isDD, bool isSPD, bool isH, bool isB, bool isAs, int sD,int cd, int limit, int pri ){
@@ -62,6 +63,7 @@ public class actionCard  {
 		cooldown = cd;
 		this.limit = limit;
 		priority = pri;
+		cdRemain = 0;
 	}
 
 	public bool isAllegation(){

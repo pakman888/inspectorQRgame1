@@ -15,33 +15,21 @@ public class gameManager : MonoBehaviour{
 	int turn;
 
 	//the container to hold character select widget
-	public UIWidget pcw;
+	public UIWidget intro_wid;
+	public UIWidget turn_wid;
 	//pickCharacter menu buttons
-	public UIButton btnTopL;
-	public UIButton btnTopR;
-	public UIButton btnBotL;
-	public UIButton btnBotR;
-	public UIButton btnMid;
+
 	public UIButton btnStart;
 
 	public UIButton btnNextRound;
 	
-	bool btnTopLPicked;
-	bool btnTopRPicked;
-	bool btnBotLPicked;
-	bool btnBotRPicked;
-	bool btnMidPicked;
+
 	bool btnStartPicked;
 
 	bool uiwIsInvis;
 	public UILabel lblRound;
 	//counter to make sure btnstart can be enabled
 	int count;
-	public string p1;
-	public string p2;
-	public string p3;
-	public string p4;
-	public string p5;
 	int [,]ppl;//used to assign single/multiple targets. clears when new round happens.
 	//int [] ppl;
 
@@ -66,7 +54,6 @@ public class gameManager : MonoBehaviour{
 	public int actIndex; 
 	public UISprite cardInfo_sprite;
 	public UIButton btnEndTurn;
-	public UIButton btnResetChoice;
 	public UIButton ac0;
 	public UIButton ac1;
 	public UIButton ac2;
@@ -107,16 +94,17 @@ public class gameManager : MonoBehaviour{
 		singleTarget = false;
 		stackDmg = false;
 		dmgAll = false;
-
+		btnNextRound.enabled = false;
 		actIndex = -1;
-		round = 1;
-		maxRound = 3;
+		round = 0;
+		maxRound = 5;
 		turn = 0;
 		users = new Player[5];
 		ppl = new int[users.Length,1];
 		for(int i = 0; i < users.Length; i++){
 			users[i] = new Player();
 		}
+		cardInfo_sprite.alpha = 0f;
 		charSelect = true;//ppl pick their characters 
 
 		//this will be false when character select works
@@ -134,11 +122,7 @@ public class gameManager : MonoBehaviour{
 
 		pickedAction = false;
 		disablemswBtns();
-		p1 = " ";
-		p2 = " ";
-		p3 = " ";
-		p4 = " ";
-		p5 = " ";
+	
 		count = 0;
 
 		ac0picked = false;
@@ -160,6 +144,39 @@ public class gameManager : MonoBehaviour{
 		
 		if(roundBegins == true)
 		{
+
+				if(round>0){
+					/*if(users[turn].hand.acArr[ppl[0,0]].cdRemain > 0)
+					{
+						ac0.enabled = false;
+					}
+					else
+					if(users[turn].hand.acArr[ppl[1,0]].cdRemain > 0)
+					{
+						ac1.enabled = false;
+					}
+				else
+					if(users[turn].hand.acArr[ppl[2,0]].cdRemain > 0)
+				{
+					ac2.enabled = false;
+				}
+				else
+					if(users[turn].hand.acArr[ppl[3,0]].cdRemain > 0)
+				{
+					ac3.enabled = false;
+				}
+				else
+					if(users[turn].hand.acArr[ppl[4,0]].cdRemain > 0)
+				{
+					ac4.enabled = false;
+				}
+				else
+					if(users[turn].hand.acArr[ppl[5,0]].cdRemain > 0)
+				{
+					ac5.enabled = false;
+				}*/
+			}
+		//	Debug.Log ("user index "+turn+"'s cd time for act1-> "+users[turn].hand.acArr[ppl[turn,0]].cdRemain);
 			if(actIndex ==-1)
 			{
 				btnEndTurn.enabled = false;
@@ -173,7 +190,7 @@ public class gameManager : MonoBehaviour{
 			}
 				
 				if(round < maxRound){
-				 GameObject.Find("rounds").GetComponent<UILabel>().text = "Round "+ round;
+				 GameObject.Find("rounds").GetComponent<UILabel>().text = "Round "+ (round+1);
 				if(turn <5){
 
 					ckeckUserBtnDisable();
@@ -220,17 +237,26 @@ public class gameManager : MonoBehaviour{
 		{
 			mrw.alpha= 0f;
 			mrw.enabled= false;
+			btnNextRound.enabled = false;
 		}
 		
-		if(msw.alpha <=0.01 && mrw.alpha <=0.01)
+		if(mrw.alpha <=0)
 		{
 			msw.alpha= 1f;
 			msw.enabled= true;
 		}		
 		showCards = false;
+
+
+
 	}
 	
-	
+
+
+
+		
+		
+		
 	void ckeckUserBtnDisable(){
 		if(turn == 0){
 						disableButton(btnP1);
@@ -368,6 +394,7 @@ public class gameManager : MonoBehaviour{
 		Debug.Log ("Turn- "+turn);
 		resetTargetColor();
 		resetActionCardColor();
+		cardInfo_sprite.alpha = 0f;
 		turn++;
 
 	}
@@ -1058,6 +1085,7 @@ public class gameManager : MonoBehaviour{
 	public void pickAction0(){//allegation
 		resetActionCardColor();
 		resetActionCardIndex();
+		cardInfo_sprite.alpha = 1f;
 		ac0picked = true;
 		pickedAction = true;
 
@@ -1077,6 +1105,7 @@ public class gameManager : MonoBehaviour{
 		ac1picked = true;
 		resetActionCardColor();
 		pickedAction = true;
+		cardInfo_sprite.alpha = 1f;
 		GameObject.Find ("card_taunt").GetComponent<UIButton>().defaultColor = Color.yellow;
 		GameObject.Find ("card_taunt").GetComponent<UIButton>().UpdateColor(true,true);
 			actIndex = 1;
@@ -1093,6 +1122,7 @@ public class gameManager : MonoBehaviour{
 		ac2picked = true;
 		pickedAction = false;
 		resetActionCardColor();
+		cardInfo_sprite.alpha = 1f;
 		GameObject.Find ("card_snitchAll").GetComponent<UIButton>().defaultColor = Color.yellow;
 		GameObject.Find ("card_snitchAll").GetComponent<UIButton>().UpdateColor(true,true);
 
@@ -1108,6 +1138,7 @@ public class gameManager : MonoBehaviour{
 		ac3picked = true;
 		resetActionCardColor();
 		pickedAction = true;
+		cardInfo_sprite.alpha = 1f;
 		GameObject.Find ("card_blame").GetComponent<UIButton>().defaultColor = Color.yellow;
 		GameObject.Find ("card_blame").GetComponent<UIButton>().UpdateColor(true,true);
 
@@ -1122,6 +1153,7 @@ public class gameManager : MonoBehaviour{
 		ac4picked = true;
 		pickedAction = false;
 		resetActionCardColor();
+		cardInfo_sprite.alpha = 1f;
 		GameObject.Find ("card_reason").GetComponent<UIButton>().defaultColor = Color.yellow;
 		GameObject.Find ("card_reason").GetComponent<UIButton>().UpdateColor(true,true);
 
@@ -1137,6 +1169,7 @@ public class gameManager : MonoBehaviour{
 		pickedAction = false;
 		resetActionCardIndex();
 		resetActionCardColor();
+		cardInfo_sprite.alpha = 1f;
 		GameObject.Find ("card_defend").GetComponent<UIButton>().defaultColor = Color.yellow;
 		GameObject.Find ("card_defend").GetComponent<UIButton>().UpdateColor(true,true);
 		actIndex = 5;
@@ -1163,6 +1196,7 @@ public class gameManager : MonoBehaviour{
 			mrw.alpha= 1f;
 		}
 		isCombat = true;
+		btnNextRound.enabled = true;
 	}
 
 	public int comparePriorities(int i, int j)
@@ -1393,23 +1427,28 @@ public class gameManager : MonoBehaviour{
 						if(multipleSnitch()==true)
 						{
 							Debug.Log ("user index "+j+" isn't the only one snitching.");	
-							for(int x = 0; x < users.Length; x++)
-							{
-								if(x!= j && users[x].hand.acArr[ppl[x,0]].isSnitch() == true){
-									Debug.Log ("user index "+x+" is damaged from snitch.");
-									users[x].receiveDmg(3);
-								}
-							}
+							//for(int x = 0; x < users.Length; x++)
+							//{
+								//if(x!= j && users[x].hand.acArr[ppl[x,0]].isSnitch() == true){
+									Debug.Log ("user index "+j+" is damaged from snitch.");
+									users[j].receiveDmg(3);
+							//	}
+						//	}
 
 						}
 						users[j].usedAction = true;
 						// end of j snitches on everyone 
 					}
+
+					if(users[u].isHealing == true && negateHeal(u) == false)
+					{
+						Debug.Log ("heal success!");
+						users[u].receiveHeal(2);
+					}
 //end of the big if
 				}
 
 			}
-
 
 			//need to inflict blame multiplier damage to everyone.
 
@@ -1449,22 +1488,22 @@ public class gameManager : MonoBehaviour{
 
 		Debug.Log("here");
 		switch(userIndex){
-		case 0: 	Debug.Log("uerIndex = 0");
+		case 0: 	Debug.Log("userIndex = 0");
 				for(int i = 0; i < users[userIndex].suspLvl; i++)//gain
-				{	Debug.Log("gain dept");
+				{	//Debug.Log("gain dept");
 				asshole[i].depth= 4;
 				assholeCpy[i].depth = 4;
 				}
 				
 				for(int j = users[userIndex].suspLvl; j < asshole.Length;j++)//lose
 			{
-				Debug.Log (userIndex+" is adjusting health loss index->" +j);
+				//Debug.Log (userIndex+" is adjusting health loss index->" +j);
 				asshole[j].depth= -3;
 				assholeCpy[j].depth = -3;
 				}
 				; break;
 
-		case 1: Debug.Log("uerIndex = 1");
+		case 1: Debug.Log("userIndex = 1");
 				for(int i = 0; i < users[userIndex].suspLvl-1; i++)//gain
 				{
 				asshole2[i].depth= 4;
@@ -1472,27 +1511,27 @@ public class gameManager : MonoBehaviour{
 				}
 				
 			for(int j = users[userIndex].suspLvl; j < asshole2.Length;j++)//lose
-			{Debug.Log (userIndex+" is adjusting health index->" +j);
+			{//Debug.Log (userIndex+" is adjusting health index->" +j);
 				asshole2[j].depth= -3;
 				assholeCpy2[j].depth = -3;
 				}
 				; break;
 
-		case 2: Debug.Log("uerIndex = 2");
+		case 2: Debug.Log("userIndex = 2");
 				for(int i = 0; i < users[userIndex].suspLvl; i++)//gain
-			{Debug.Log("gain suspicion index"+ i);
+			{//Debug.Log("gain suspicion index"+ i);
 				asshole3[i].depth= 4;
 				assholeCpy3[i].depth = 4;
 				}
 				
 				for(int j = users[userIndex].suspLvl; j < asshole2.Length;j++)//lose
-			{Debug.Log (userIndex+" is adjusting health index->" +j);
+			{//Debug.Log (userIndex+" is adjusting health index->" +j);
 				asshole3[j].depth= -3;
 				assholeCpy3[j].depth = -3;
 				}
 				; break;
 
-		case 3: Debug.Log("uerIndex = 3");
+		case 3: Debug.Log("userIndex = 3");
 			for(int i = 0; i < users[userIndex].suspLvl; i++)//gain
 			{
 				asshole4[i].depth= 4;
@@ -1500,13 +1539,13 @@ public class gameManager : MonoBehaviour{
 			}
 			
 			for(int j = users[userIndex].suspLvl; j < asshole3.Length;j++)//lose
-			{Debug.Log (userIndex+" is adjusting health index->" +j);
+			{//Debug.Log (userIndex+" is adjusting health index->" +j);
 				asshole4[j].depth= -3;
 				assholeCpy4[j].depth = -3;
 			}
 			; break;
 
-		case 4: Debug.Log("uerIndex = 4");
+		case 4: Debug.Log("userIndex = 4");
 			for(int i = 0; i < users[userIndex].suspLvl; i++)//gain
 			{
 				asshole5[i].depth= 4;
@@ -1514,7 +1553,7 @@ public class gameManager : MonoBehaviour{
 			}
 			
 			for(int j = users[userIndex].suspLvl; j < asshole4.Length;j++)//lose
-			{Debug.Log (userIndex+" is adjusting health index->" +j);
+			{//Debug.Log (userIndex+" is adjusting health index->" +j);
 				asshole4[j].depth= -3;
 				assholeCpy5[j].depth = -3;
 
@@ -1552,17 +1591,9 @@ public class gameManager : MonoBehaviour{
 		Debug.Log ("starting game.");
 		btnStartPicked = true;
 		
-		users[0].setRole(p1);
-		users[1].setRole (p2);
-		users[2].setRole(p3);
-		users[3].setRole (p4);
-		users[4].setRole (p5);
-		for(int i = 0; i < users.Length; i++){
-			Debug.Log (users[i].role);
-		}
-		
+
 		count = 0;
-		pcw.enabled = false;
+		intro_wid.enabled = false;
 		
 	}
 
@@ -1652,226 +1683,7 @@ public class gameManager : MonoBehaviour{
 
 
 
-	public void ClickProfile1(){
 
-		if( btnTopLPicked == false)
-		{
-
-		switch(count){
-		case 0: 
-			p1 = GameObject.Find ("name").GetComponentInParent<UILabel>().text;
-			btnTopLPicked = true;
-			Debug.Log("player1 is: "+p1);
-			users[0].setRole(p1);
-			break;
-			
-		case 1: 
-			p2 = GameObject.Find ("name").GetComponentInParent<UILabel>().text;
-			btnTopLPicked = true;
-			Debug.Log("player2 is: "+p2);
-			users[1].setRole(p2);
-			break;  
-		case 2: 
-			
-			p3 = GameObject.Find ("name").GetComponentInParent<UILabel>().text;
-			btnTopLPicked = true;
-			Debug.Log("player3 is: "+p3);
-			users[2].setRole(p3);
-			break;
-		case 3: 
-			p4 = GameObject.Find ("name").GetComponentInParent<UILabel>().text;
-			btnTopLPicked = true;
-			Debug.Log("player4 is: "+p4);
-			users[3].setRole(p4);
-			break;
-			case 4: 
-				p5 = GameObject.Find ("name").GetComponentInParent<UILabel>().text;
-				btnTopLPicked = true;
-				Debug.Log("player5 is: "+p5);
-				users[4].setRole(p4);
-				break;
-		}
-			btnTopL.defaultColor = btnTopL.disabledColor;
-
-			count++;
-		}
-	}
-
-
-	public void ClickProfile2(){
-
-		if(btnTopRPicked == false)
-		{
-			switch(count){
-			case 0: 
-				p1 = GameObject.Find ("name2").GetComponentInParent<UILabel>().text;
-				btnTopRPicked = true;
-				Debug.Log("player1 is: "+p1);
-				users[0].setRole(p1);
-				break;
-				
-			case 1: 
-				p2 = GameObject.Find ("name2").GetComponentInParent<UILabel>().text;
-				btnTopRPicked = true;
-				Debug.Log("player2 is: "+p2);
-				users[1].setRole(p2);
-				break;  
-			case 2: 
-				
-				p3 = GameObject.Find ("name2").GetComponentInParent<UILabel>().text;
-				btnTopRPicked = true;
-				Debug.Log("player3 is: "+p3);
-				users[2].setRole(p3);
-				break;
-			case 3: 
-				p4 = GameObject.Find ("name2").GetComponentInParent<UILabel>().text;
-				btnTopRPicked = true;
-				Debug.Log("player4 is: "+p4);
-				users[3].setRole(p4);
-				break;
-			case 4: 
-				p5 = GameObject.Find ("name2").GetComponentInParent<UILabel>().text;
-				btnBotLPicked = true;
-				Debug.Log("player5 is: "+p5);
-				users[4].setRole(p5);
-				break;
-			}
-			btnTopR.defaultColor = btnTopR.disabledColor;
-			count++;
-		}
-				
-	}
-
-	public void ClickProfile3(){
-		if(btnBotLPicked == false)
-		{
-			switch(count){
-			case 0: 
-				p1 = GameObject.Find ("name3").GetComponentInParent<UILabel>().text;
-				
-				btnBotLPicked = true;
-				Debug.Log("player1 is: "+p1);
-				users[0].setRole(p1);
-				break;
-				
-			case 1: 
-				p2 = GameObject.Find ("name3").GetComponentInParent<UILabel>().text;
-				btnBotLPicked = true;
-				Debug.Log("player2 is: "+p2);
-				users[1].setRole(p2);
-				break;  
-			case 2: 
-				
-				p3 = GameObject.Find ("name3").GetComponentInParent<UILabel>().text;
-				btnBotLPicked = true;
-				Debug.Log("player3 is: "+p3);
-				users[2].setRole(p3);
-				break;
-			case 3: 
-				p4 = GameObject.Find ("name3").GetComponentInParent<UILabel>().text;
-				btnBotLPicked = true;
-				Debug.Log("player4 is: "+p4);
-				users[3].setRole(p4);
-				break;
-			case 4: 
-				p5 = GameObject.Find ("name3").GetComponentInParent<UILabel>().text;
-				btnBotLPicked = true;
-				Debug.Log("player5 is: "+p5);
-				users[4].setRole(p5);
-				break;
-		}
-			btnBotL.defaultColor = btnBotL.disabledColor;
-			count++;
-		}
-	}
-
-
-
-	public void ClickProfile4(){
-
-		if(btnBotRPicked == false)
-		{
-			switch(count){
-			case 0: 
-				p1 = GameObject.Find ("name4").GetComponentInParent<UILabel>().text;
-				btnBotRPicked = true;
-				Debug.Log("player1 is: "+p1);
-				users[0].setRole(p1);
-				break;
-				
-			case 1: 
-				p2 = GameObject.Find ("name4").GetComponentInParent<UILabel>().text;
-				btnBotRPicked = true;
-				Debug.Log("player2 is: "+p2);
-				users[1].setRole(p2);
-				break;  
-			case 2: 
-				
-				p3 = GameObject.Find ("name4").GetComponentInParent<UILabel>().text;
-				btnBotRPicked = true;
-				Debug.Log("player3 is: "+p3);
-				users[2].setRole(p3);
-				break;
-			case 3: 
-				p4 = GameObject.Find ("name4").GetComponentInParent<UILabel>().text;
-				btnBotRPicked = true;
-				Debug.Log("player4 is: "+p4);
-				users[3].setRole(p4);
-				break;
-			case 4: 
-				p5 = GameObject.Find ("name4").GetComponentInParent<UILabel>().text;
-				btnBotRPicked = true;
-				Debug.Log("player5 is: "+p5);
-				users[4].setRole(p5);
-				break;
-			}
-			btnBotR.defaultColor = btnBotR.disabledColor;
-			count++;
-		}
-	}
-		public void ClickProfile5(){
-			
-		if(btnMidPicked == false)
-			{
-				switch(count){
-				case 0: 
-					p1 = GameObject.Find ("name5").GetComponentInParent<UILabel>().text;
-				btnMidPicked = true;
-					Debug.Log("player1 is: "+p1);
-					users[0].setRole(p1);
-					break;
-					
-				case 1: 
-					p2 = GameObject.Find ("name5").GetComponentInParent<UILabel>().text;
-				btnMidPicked = true;
-					Debug.Log("player2 is: "+p2);
-					users[1].setRole(p2);
-					break;  
-				case 2: 
-					
-					p3 = GameObject.Find ("name5").GetComponentInParent<UILabel>().text;
-				btnMidPicked = true;
-					Debug.Log("player3 is: "+p3);
-					users[2].setRole(p3);
-					break;
-				case 3: 
-					p4 = GameObject.Find ("name5").GetComponentInParent<UILabel>().text;
-				btnMidPicked = true;
-					Debug.Log("player4 is: "+p4);
-					users[3].setRole(p4);
-					break;
-				case 4: 
-					p5 = GameObject.Find ("name5").GetComponentInParent<UILabel>().text;
-				btnMidPicked = true;
-					Debug.Log("player5 is: "+p5);
-					users[4].setRole(p5);
-					break;
-				}
-				btnMid.defaultColor = btnMid.disabledColor;
-				count++;
-			}
-
-	}
 
 
 }
