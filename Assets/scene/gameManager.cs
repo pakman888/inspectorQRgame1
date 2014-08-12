@@ -24,7 +24,8 @@ public class gameManager : MonoBehaviour{
 	public UIButton btnMid;
 	public UIButton btnStart;
 
-
+	public UIButton btnNextRound;
+	
 	bool btnTopLPicked;
 	bool btnTopRPicked;
 	bool btnBotLPicked;
@@ -47,8 +48,9 @@ public class gameManager : MonoBehaviour{
 
 
 	//manages suspicion chart widget
-	public UIWidget scw; //contains user info with hp bar
-	public UIWidget uhw;
+	public UIWidget msw; //contains user info with hp bar
+	public UIWidget mrw;
+	public UIWidget end;
 	public UIButton btnP1;
 	public UIButton btnP2;
 	public UIButton btnP3;
@@ -57,71 +59,7 @@ public class gameManager : MonoBehaviour{
 	public UISprite test;
 
 
-	public UI2DSprite p1pt1;
-	public UI2DSprite p1pt2;
-	public UI2DSprite p1pt3;
-	public UI2DSprite p1pt4;
-	public UI2DSprite p1pt5;
-	public UI2DSprite p1pt6;
-	public UI2DSprite p1pt7;
-	public UI2DSprite p1pt8;
-	public UI2DSprite p1pt9;
-	public UI2DSprite p1pt10;
-	public UI2DSprite p1pt11;
-	public UI2DSprite p1pt12;
-	public UI2DSprite p1pt13;
-	public UI2DSprite p1pt14;
-	public UI2DSprite p1pt15;
-	public UI2DSprite p1pt16;
-	public UI2DSprite p1pt17;
-	public UI2DSprite p1pt18;
-	public UI2DSprite p1pt19;
-	public UI2DSprite p1pt20;
-	public UI2DSprite p1pt21;
-	public UI2DSprite p1pt22;
-	public UI2DSprite p1pt23;
-	public UI2DSprite p1pt24;
-	public UI2DSprite p1pt25;
-	public UI2DSprite p1pt26;
-	public UI2DSprite p1pt27;
-	public UI2DSprite p1pt28;
-	public UI2DSprite p1pt29;
-	public UI2DSprite p1pt30;
-	public UI2DSprite p1pt31;
-	public UI2DSprite p1pt32;
-
-	public UI2DSprite p2pt1 = new UI2DSprite();
-	public UI2DSprite p2pt2;
-	public UI2DSprite p2pt3;
-	public UI2DSprite p2pt4;
-	public UI2DSprite p2pt5;
-	public UI2DSprite p2pt6;
-	public UI2DSprite p2pt7;
-	public UI2DSprite p2pt8;
-	public UI2DSprite p2pt9;
-	public UI2DSprite p2pt10;
-	public UI2DSprite p2pt11;
-	public UI2DSprite p2pt12;
-	public UI2DSprite p2pt13;
-	public UI2DSprite p2pt14;
-	public UI2DSprite p2pt15;
-	public UI2DSprite p2pt16;
-	public UI2DSprite p2pt17;
-	public UI2DSprite p2pt18;
-	public UI2DSprite p2pt19;
-	public UI2DSprite p2pt20;
-	public UI2DSprite p2pt21;
-	public UI2DSprite p2pt22;
-	public UI2DSprite p2pt23;
-	public UI2DSprite p2pt24;
-	public UI2DSprite p2pt25;
-	public UI2DSprite p2pt26;
-	public UI2DSprite p2pt27;
-	public UI2DSprite p2pt28;
-	public UI2DSprite p2pt29;
-	public UI2DSprite p2pt30;
-	public UI2DSprite p2pt31;
-	public UI2DSprite p2pt32;
+	
 
 	//game round values
 	public bool pickedAction;
@@ -141,7 +79,7 @@ public class gameManager : MonoBehaviour{
 
 	public bool stackDmg;
 	public bool dmgAll;
-
+	public bool showCards;
 	public bool ac0picked;
 	public bool ac1picked;
 	public bool ac2picked;
@@ -153,27 +91,29 @@ public class gameManager : MonoBehaviour{
 	public UISprite []asshole2;
 	public UISprite []asshole3;
 	public UISprite []asshole4;
+	public UISprite []asshole5;
+
+	public UISprite []assholeCpy;
+	public UISprite []assholeCpy2;
+	public UISprite []assholeCpy3;
+	public UISprite []assholeCpy4;
+	public UISprite []assholeCpy5;
+	public bool isCombat;
 	// Use this for initialization
 	void Start () {
-		//p1SuspicionPoints = new UI2DSprite[32];
-		//p1SuspicionPoints = new UI2DSprite[32];//GameObject.Find ("pointWidget_suspect1").GetComponentsInParent<UI2DSprite>();
-//		p1pts = new UISprite[2];
-		//asshole = new UISprite[1];
-
-
-	//	p2pt1.sprite2d.name = GameObject.Find ("s2p1").GetComponent<UI2DSprite>().sprite2D.name ;
+		isCombat = false;
+		showCards = false;
 		singleTargetVictim = -1;
 		singleTarget = false;
 		stackDmg = false;
 		dmgAll = false;
 
 		actIndex = -1;
-		round = 0;
-		maxRound = 10;
+		round = 1;
+		maxRound = 3;
 		turn = 0;
 		users = new Player[5];
 		ppl = new int[users.Length,1];
-		//ppl = new int[users.Length];
 		for(int i = 0; i < users.Length; i++){
 			users[i] = new Player();
 		}
@@ -185,22 +125,15 @@ public class gameManager : MonoBehaviour{
 		showResult = false; //time to display game result
 
 		uiwIsInvis = false;
-	//	btnBotLPicked = false;
-	//	btnTopLPicked = false;
-	//	btnTopRPicked = false;
-	//	btnBotRPicked = false;
-	//	btnStart.enabled = false;
-	//	btnStartPicked = false;
-
 	
 		btnStart.defaultColor = btnStart.disabledColor;
-		scw.alpha = 0.0f;
-		scw.enabled = false;
-		uhw.alpha = 0.0f;
-		uhw.enabled = false;
+		msw.alpha = 0.0f;
+		msw.enabled = false;
+		mrw.alpha = 0.0f;
+		mrw.enabled = false;
 
 		pickedAction = false;
-		disableScwBtns();
+		disablemswBtns();
 		p1 = " ";
 		p2 = " ";
 		p3 = " ";
@@ -224,49 +157,7 @@ public class gameManager : MonoBehaviour{
 	// Update is called once per frame
 	void Update () {
 
-		//this only applies when character selection works
-		/*
-		if(charSelect == true)
-		{
-			if(count< 5)
-			{
-				btnStart.defaultColor = btnStart.disabledColor;
-			}
-			else
-			if(count>= 5)
-			{
-				btnStart.defaultColor = dummy;
-				btnStart.enabled = true;
-			}
-			
-
-			Debug.Log ("btnstartpicked is: "+btnStartPicked );
-			
-			if( (btnStartPicked == true) ) {
-				if(scw.alpha < 1 ){	
-					Debug.Log ("true");
-					pcw.alpha-=0.01f;
-
-				}
-
-				if(pcw.alpha <= 0.01f && scw.alpha < 1 && uhw.alpha < 1)
-				{
-					scw.alpha +=0.01f;
-					uhw.alpha+= 0.01f;
-					if(scw.alpha> 1 && uhw.alpha > 1)
-					{
-						roundBegins = true;
-						charSelect = false;
-						enableScwBtns();
-						scw.enabled = true;
-						uhw.enabled = true;
-						btnStart.enabled = false;
-					}
-				}
-			}
-		}
-*/
-
+		
 		if(roundBegins == true)
 		{
 			if(actIndex ==-1)
@@ -280,52 +171,30 @@ public class gameManager : MonoBehaviour{
 				btnEndTurn.enabled = true;
 				btnEndTurn.defaultColor = new Color(136,218,69,255);
 			}
-				//GameObject.Find("rounds").GetComponent<UILabel>().text = "Round "+round.ToString();
+				
 				if(round < maxRound){
 				 GameObject.Find("rounds").GetComponent<UILabel>().text = "Round "+ round;
 				if(turn <5){
 
-					if(turn == 0){
-					//	GameObject.Find("turnIndicator").GetComponent<UILabel>().text = "Player 1's turn";
-						disableButton(btnP1);
-
-					}
-
-					if(turn == 1){
-					//	GameObject.Find("turnIndicator").GetComponent<UILabel>().text = "Player 2's turn";
-						enableButton(btnP1);
-						disableButton(btnP2);
-					}
-
-					if(turn ==2){
-					//	GameObject.Find("turnIndicator").GetComponent<UILabel>().text = "Player 3's turn";
-
-						enableButton(btnP2);
-						disableButton(btnP3);
-					}
-					
-					if(turn ==3){
-					//	GameObject.Find("turnIndicator").GetComponent<UILabel>().text = "Player 4's turn";
-
-						enableButton(btnP3);
-						disableButton(btnP4);
-					}
-
-					if(turn ==4){
-					//	GameObject.Find("turnIndicator").GetComponent<UILabel>().text = "Player 5's turn";
-
-						enableButton(btnP4);
-						disableButton(btnP5);
-					}
+					ckeckUserBtnDisable();
 				}
 				else
 					if(turn ==5){
 					Debug.Log ("over 5 turns.");
 					enableButton(btnP5);
-					combatPhase();
 					revealacArr();
-					round++;
+					showCards = true;
+					
 				}
+				
+				if(showCards == true)
+				{
+					Debug.Log ("show cards is true");
+					if(isCombat == true)
+						combatPhase();	
+
+				}
+
 			}
 			else
 				if(round>= maxRound){
@@ -336,9 +205,61 @@ public class gameManager : MonoBehaviour{
 		if(roundBegins == false)
 		{
 			//Debug.Log("end of game");
+			msw.alpha = 0f;
+			mrw.alpha = 0f;
+			msw.enabled = false;
+			mrw.enabled = false;
+			
+			end.alpha = 1f;
 		}
 	}
+	
+	public void nextRound(){
+		round++;
+		if(mrw.alpha >=1)
+		{
+			mrw.alpha= 0f;
+			mrw.enabled= false;
+		}
+		
+		if(msw.alpha <=0.01 && mrw.alpha <=0.01)
+		{
+			msw.alpha= 1f;
+			msw.enabled= true;
+		}		
+		showCards = false;
+	}
+	
+	
+	void ckeckUserBtnDisable(){
+		if(turn == 0){
+						disableButton(btnP1);
+					}
 
+					if(turn == 1){
+						enableButton(btnP1);
+						disableButton(btnP2);
+					}
+
+					if(turn ==2){
+						enableButton(btnP2);
+						disableButton(btnP3);
+					}
+					
+					if(turn ==3){
+				
+						enableButton(btnP3);
+						disableButton(btnP4);
+					}
+
+					if(turn ==4){
+						enableButton(btnP4);
+						disableButton(btnP5);
+					}
+	}
+	
+	
+	
 	public void disableButton(UIButton btn)
 	{
 		btn.defaultColor = btn.disabledColor;
@@ -352,7 +273,7 @@ public class gameManager : MonoBehaviour{
 
 	}
 
-	public void disableScwBtns(){
+	public void disablemswBtns(){
 	
 		ac0.enabled = false;
 		ac1.enabled = false;
@@ -364,7 +285,7 @@ public class gameManager : MonoBehaviour{
 	}
 
 
-	public void enableScwBtns(){
+	public void enablemswBtns(){
 		
 		ac0.enabled = true;
 		ac1.enabled = true;
@@ -1228,7 +1149,20 @@ public class gameManager : MonoBehaviour{
 	//--------------------------------------------------------------------------------------
 
 	public void revealacArr(){
+		Debug.Log ("reveal cards");
 		turn = 0;
+		
+		if(msw.alpha >0.01)
+		{
+			msw.alpha= 0f;
+			msw.enabled= false;
+		}
+		
+		if(msw.alpha <=0.01 && mrw.alpha <=0.01)
+		{
+			mrw.alpha= 1f;
+		}
+		isCombat = true;
 	}
 
 	public int comparePriorities(int i, int j)
@@ -1256,7 +1190,7 @@ public class gameManager : MonoBehaviour{
 				{
 					if(j!=u)
 					{
-
+						
 						if( (users[j].atkUserIndex == u) && (users[j].hand.acArr[ppl[j,0] ].isAllegation()) ) //is user j allegating user u?
 						{//allegation fight
 
@@ -1471,7 +1405,7 @@ public class gameManager : MonoBehaviour{
 						users[j].usedAction = true;
 						// end of j snitches on everyone 
 					}
-
+//end of the big if
 				}
 
 			}
@@ -1502,7 +1436,7 @@ public class gameManager : MonoBehaviour{
 	//	GameObject.Find("skill_descr_suspect5").GetComponent<UILabel>().text = users[4].suspLvl.ToString();
 
 //		GameObject.Find ("pointWidget_suspect1").GetComponentInParent<UI2DSprite>().GetComponent("1").get = "None";
-
+		isCombat = false;
 
 
 
@@ -1518,61 +1452,72 @@ public class gameManager : MonoBehaviour{
 		case 0: 	Debug.Log("uerIndex = 0");
 				for(int i = 0; i < users[userIndex].suspLvl; i++)//gain
 				{	Debug.Log("gain dept");
-				asshole[i].depth= 2;
+				asshole[i].depth= 4;
+				assholeCpy[i].depth = 4;
 				}
 				
-				for(int j = users[userIndex].suspLvl-1; j < asshole.Length;j++)//lose
+				for(int j = users[userIndex].suspLvl; j < asshole.Length;j++)//lose
 			{
 				Debug.Log (userIndex+" is adjusting health loss index->" +j);
 				asshole[j].depth= -3;
+				assholeCpy[j].depth = -3;
 				}
 				; break;
 
 		case 1: Debug.Log("uerIndex = 1");
 				for(int i = 0; i < users[userIndex].suspLvl-1; i++)//gain
 				{
-				asshole2[i].depth= 2;
+				asshole2[i].depth= 4;
+				assholeCpy2[i].depth = 4;
 				}
 				
-			for(int j = users[userIndex].suspLvl-1; j < asshole2.Length;j++)//lose
+			for(int j = users[userIndex].suspLvl; j < asshole2.Length;j++)//lose
 			{Debug.Log (userIndex+" is adjusting health index->" +j);
 				asshole2[j].depth= -3;
+				assholeCpy2[j].depth = -3;
 				}
 				; break;
 
 		case 2: Debug.Log("uerIndex = 2");
 				for(int i = 0; i < users[userIndex].suspLvl; i++)//gain
 			{Debug.Log("gain suspicion index"+ i);
-				asshole2[i].depth= 2;
+				asshole3[i].depth= 4;
+				assholeCpy3[i].depth = 4;
 				}
 				
-				for(int j = users[userIndex].suspLvl-1; j < asshole2.Length;j++)//lose
+				for(int j = users[userIndex].suspLvl; j < asshole2.Length;j++)//lose
 			{Debug.Log (userIndex+" is adjusting health index->" +j);
-				asshole2[j].depth= -3;
+				asshole3[j].depth= -3;
+				assholeCpy3[j].depth = -3;
 				}
 				; break;
 
 		case 3: Debug.Log("uerIndex = 3");
 			for(int i = 0; i < users[userIndex].suspLvl; i++)//gain
 			{
-				asshole3[i].depth= 2;
+				asshole4[i].depth= 4;
+				assholeCpy4[i].depth = 4;
 			}
 			
-			for(int j = users[userIndex].suspLvl-1; j < asshole3.Length;j++)//lose
+			for(int j = users[userIndex].suspLvl; j < asshole3.Length;j++)//lose
 			{Debug.Log (userIndex+" is adjusting health index->" +j);
-				asshole3[j].depth= -3;
+				asshole4[j].depth= -3;
+				assholeCpy4[j].depth = -3;
 			}
 			; break;
 
 		case 4: Debug.Log("uerIndex = 4");
 			for(int i = 0; i < users[userIndex].suspLvl; i++)//gain
 			{
-				asshole4[i].depth= 2;
+				asshole5[i].depth= 4;
+				assholeCpy5[i].depth = 4;
 			}
 			
-			for(int j = users[userIndex].suspLvl-1; j < asshole4.Length;j++)//lose
+			for(int j = users[userIndex].suspLvl; j < asshole4.Length;j++)//lose
 			{Debug.Log (userIndex+" is adjusting health index->" +j);
 				asshole4[j].depth= -3;
+				assholeCpy5[j].depth = -3;
+
 			}
 			; break;
 		default: ;break;
