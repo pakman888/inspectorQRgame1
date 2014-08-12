@@ -85,6 +85,13 @@ public class gameManager : MonoBehaviour{
 	public UISprite []assholeCpy3;
 	public UISprite []assholeCpy4;
 	public UISprite []assholeCpy5;
+
+	public UISprite card_player1Choice;
+	public UISprite card_player2Choice;
+	public UISprite card_player3Choice;
+	public UISprite card_player4Choice;
+	public UISprite card_player5Choice;
+
 	public bool isCombat;
 	// Use this for initialization
 	void Start () {
@@ -247,14 +254,71 @@ public class gameManager : MonoBehaviour{
 		}		
 		showCards = false;
 
-
-
 	}
 	
 
 
 
-		
+	void cardChoiceReveal(int userIndex, int cardIndex){
+		if(userIndex ==0){
+			switch(cardIndex){
+			case 0: GameObject.Find ("move_suspect1").GetComponent<UISprite>().spriteName = GameObject.Find ("card_makeAllegation").GetComponent<UISprite>().spriteName;break;
+			case 1: GameObject.Find ("move_suspect1").GetComponent<UISprite>().spriteName = GameObject.Find ("card_taunt").GetComponent<UISprite>().spriteName;break;
+			case 2: GameObject.Find ("move_suspect1").GetComponent<UISprite>().spriteName = GameObject.Find ("card_snitchAll").GetComponent<UISprite>().spriteName;break;
+			case 3: GameObject.Find ("move_suspect1").GetComponent<UISprite>().spriteName = GameObject.Find ("card_blame").GetComponent<UISprite>().spriteName;break;
+			case 4: GameObject.Find ("move_suspect1").GetComponent<UISprite>().spriteName = GameObject.Find ("card_reason").GetComponent<UISprite>().spriteName;break;
+			case 5: GameObject.Find ("move_suspect1").GetComponent<UISprite>().spriteName = GameObject.Find ("card_defend").GetComponent<UISprite>().spriteName;break;
+			default: Debug.Log ("user 1 didn't pick a proper action");break;
+			}
+		}
+		if(userIndex ==1){
+			switch(cardIndex){
+			case 0: GameObject.Find ("move_suspect2").GetComponent<UISprite>().spriteName = GameObject.Find ("card_makeAllegation").GetComponent<UISprite>().spriteName;break;
+			case 1: GameObject.Find ("move_suspect2").GetComponent<UISprite>().spriteName = GameObject.Find ("card_taunt").GetComponent<UISprite>().spriteName;break;
+			case 2: GameObject.Find ("move_suspect2").GetComponent<UISprite>().spriteName = GameObject.Find ("card_snitchAll").GetComponent<UISprite>().spriteName;break;
+			case 3: GameObject.Find ("move_suspect2").GetComponent<UISprite>().spriteName = GameObject.Find ("card_blame").GetComponent<UISprite>().spriteName;break;
+			case 4: GameObject.Find ("move_suspect2").GetComponent<UISprite>().spriteName = GameObject.Find ("card_reason").GetComponent<UISprite>().spriteName;break;
+			case 5: GameObject.Find ("move_suspect2").GetComponent<UISprite>().spriteName = GameObject.Find ("card_defend").GetComponent<UISprite>().spriteName;break;
+
+				default: Debug.Log ("user 2 didn't pick a proper action");break;			}
+		}
+		if(userIndex ==2){
+			switch(cardIndex){
+			case 0: GameObject.Find ("move_suspect3").GetComponent<UISprite>().spriteName = GameObject.Find ("card_makeAllegation").GetComponent<UISprite>().spriteName;break;
+			case 1: GameObject.Find ("move_suspect3").GetComponent<UISprite>().spriteName = GameObject.Find ("card_taunt").GetComponent<UISprite>().spriteName;break;
+			case 2: GameObject.Find ("move_suspect3").GetComponent<UISprite>().spriteName = GameObject.Find ("card_snitchAll").GetComponent<UISprite>().spriteName;break;
+			case 3: GameObject.Find ("move_suspect3").GetComponent<UISprite>().spriteName = GameObject.Find ("card_blame").GetComponent<UISprite>().spriteName;break;
+			case 4: GameObject.Find ("move_suspect3").GetComponent<UISprite>().spriteName = GameObject.Find ("card_reason").GetComponent<UISprite>().spriteName;break;
+			case 5: GameObject.Find ("move_suspect3").GetComponent<UISprite>().spriteName = GameObject.Find ("card_defend").GetComponent<UISprite>().spriteName;break;
+
+			default: Debug.Log ("user 3 didn't pick a proper action");break;
+			}
+		}
+		if(userIndex ==3){
+			switch(cardIndex){
+			case 0: GameObject.Find ("move_suspect4").GetComponent<UISprite>().spriteName = GameObject.Find ("card_makeAllegation").GetComponent<UISprite>().spriteName;break;
+			case 1: GameObject.Find ("move_suspect4").GetComponent<UISprite>().spriteName = GameObject.Find ("card_taunt").GetComponent<UISprite>().spriteName;break;
+			case 2: GameObject.Find ("move_suspect4").GetComponent<UISprite>().spriteName = GameObject.Find ("card_snitchAll").GetComponent<UISprite>().spriteName;break;
+			case 3: GameObject.Find ("move_suspect4").GetComponent<UISprite>().spriteName = GameObject.Find ("card_blame").GetComponent<UISprite>().spriteName;break;
+			case 4: GameObject.Find ("move_suspect4").GetComponent<UISprite>().spriteName = GameObject.Find ("card_reason").GetComponent<UISprite>().spriteName;break;
+			case 5: GameObject.Find ("move_suspect4").GetComponent<UISprite>().spriteName = GameObject.Find ("card_defend").GetComponent<UISprite>().spriteName;break;
+			default: Debug.Log ("user 4 didn't pick a proper action");break;
+			}
+		}
+		if(userIndex ==4){
+			switch(cardIndex){
+			case 0: GameObject.Find ("move_suspect5").GetComponent<UISprite>().spriteName = GameObject.Find ("card_makeAllegation").GetComponent<UISprite>().spriteName;break;
+			case 1: GameObject.Find ("move_suspect5").GetComponent<UISprite>().spriteName = GameObject.Find ("card_taunt").GetComponent<UISprite>().spriteName;break;
+			case 2: GameObject.Find ("move_suspect5").GetComponent<UISprite>().spriteName = GameObject.Find ("card_snitchAll").GetComponent<UISprite>().spriteName;break;
+			case 3: GameObject.Find ("move_suspect5").GetComponent<UISprite>().spriteName = GameObject.Find ("card_blame").GetComponent<UISprite>().spriteName;break;
+			case 4: GameObject.Find ("move_suspect5").GetComponent<UISprite>().spriteName = GameObject.Find ("card_reason").GetComponent<UISprite>().spriteName;break;
+			case 5: GameObject.Find ("move_suspect5").GetComponent<UISprite>().spriteName = GameObject.Find ("card_defend").GetComponent<UISprite>().spriteName;break;
+
+			default: Debug.Log ("user 5 didn't pick a proper action");break;
+			}
+		}
+
+	}
 		
 		
 	void ckeckUserBtnDisable(){
@@ -321,20 +385,6 @@ public class gameManager : MonoBehaviour{
 		ac5.enabled = true;
 	
 	}
-
-	public void checkacArrelectUserDisable(){
-
-	}
-
-	public void showCardAction(){
-
-	}
-
-	void reSetP1SuspicionPoints()
-	{
-		//GameObject.Find("pointWidget_suspect1").GetComponentsInParents<UI2DSprite>();
-	}
-
 
 	//functions for the action card buttons
 	//each action should reveal if it targets other people or self target
@@ -1196,6 +1246,12 @@ public class gameManager : MonoBehaviour{
 			mrw.alpha= 1f;
 		}
 		isCombat = true;
+
+		for(int i = 0; i < 6; i++)
+		{
+			cardChoiceReveal(i, ppl[i,0]);
+
+		}
 		btnNextRound.enabled = true;
 	}
 
