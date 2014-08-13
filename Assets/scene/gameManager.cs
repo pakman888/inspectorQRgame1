@@ -91,10 +91,12 @@ public class gameManager : MonoBehaviour{
 	public UISprite card_player3Choice;
 	public UISprite card_player4Choice;
 	public UISprite card_player5Choice;
+	public bool cardsOnCD;
 
 	public bool isCombat;
 	// Use this for initialization
 	void Start () {
+		cardsOnCD = false;
 		isCombat = false;
 		showCards = false;
 		singleTargetVictim = -1;
@@ -104,7 +106,7 @@ public class gameManager : MonoBehaviour{
 		btnNextRound.enabled = false;
 		actIndex = -1;
 		round = 0;
-		maxRound = 5;
+		maxRound = 2;
 		turn = 0;
 		users = new Player[5];
 		ppl = new int[users.Length,1];
@@ -153,35 +155,7 @@ public class gameManager : MonoBehaviour{
 		{
 
 				if(round>0){
-					/*if(users[turn].hand.acArr[ppl[0,0]].cdRemain > 0)
-					{
-						ac0.enabled = false;
-					}
-					else
-					if(users[turn].hand.acArr[ppl[1,0]].cdRemain > 0)
-					{
-						ac1.enabled = false;
-					}
-				else
-					if(users[turn].hand.acArr[ppl[2,0]].cdRemain > 0)
-				{
-					ac2.enabled = false;
-				}
-				else
-					if(users[turn].hand.acArr[ppl[3,0]].cdRemain > 0)
-				{
-					ac3.enabled = false;
-				}
-				else
-					if(users[turn].hand.acArr[ppl[4,0]].cdRemain > 0)
-				{
-					ac4.enabled = false;
-				}
-				else
-					if(users[turn].hand.acArr[ppl[5,0]].cdRemain > 0)
-				{
-					ac5.enabled = false;
-				}*/
+			
 			}
 		//	Debug.Log ("user index "+turn+"'s cd time for act1-> "+users[turn].hand.acArr[ppl[turn,0]].cdRemain);
 			if(actIndex ==-1)
@@ -216,7 +190,10 @@ public class gameManager : MonoBehaviour{
 					Debug.Log ("show cards is true");
 					if(isCombat == true)
 						combatPhase();	
-
+					if(cardsOnCD == true)
+					{
+						reduceCardCoolDown();
+					}
 				}
 
 			}
@@ -234,10 +211,24 @@ public class gameManager : MonoBehaviour{
 			msw.enabled = false;
 			mrw.enabled = false;
 			
-			end.alpha = 1f;
+			//end.alpha = 1f;
+			Application.LoadLevel("ending");
 		}
 	}
-	
+
+	public void reduceCardCoolDown(){
+		for(int i = 0; i < users.Length; i++)
+		{
+			for(int cards = 0; cards < 6; cards++)
+			{
+				if(users[i].hand.acArr[ppl[cards,0]].cdRemain > 0)
+				{
+					users[i].hand.acArr[ppl[cards,0]].cdRemain-=1;
+				}
+			}
+		}
+	}
+
 	public void nextRound(){
 		round++;
 		if(mrw.alpha >=1)
@@ -253,15 +244,17 @@ public class gameManager : MonoBehaviour{
 			msw.enabled= true;
 		}		
 		showCards = false;
+		cardsOnCD = true;
 
+		Debug.Log ("next round clicked");
 	}
 	
 
 
 
-	void cardChoiceReveal(int userIndex, int cardIndex){
+	void cardChoiceReveal(int userIndex){
 		if(userIndex ==0){
-			switch(cardIndex){
+			switch(ppl[userIndex,0]  ){
 			case 0: GameObject.Find ("move_suspect1").GetComponent<UISprite>().spriteName = GameObject.Find ("card_makeAllegation").GetComponent<UISprite>().spriteName;break;
 			case 1: GameObject.Find ("move_suspect1").GetComponent<UISprite>().spriteName = GameObject.Find ("card_taunt").GetComponent<UISprite>().spriteName;break;
 			case 2: GameObject.Find ("move_suspect1").GetComponent<UISprite>().spriteName = GameObject.Find ("card_snitchAll").GetComponent<UISprite>().spriteName;break;
@@ -272,7 +265,7 @@ public class gameManager : MonoBehaviour{
 			}
 		}
 		if(userIndex ==1){
-			switch(cardIndex){
+			switch(ppl[userIndex,0] ){
 			case 0: GameObject.Find ("move_suspect2").GetComponent<UISprite>().spriteName = GameObject.Find ("card_makeAllegation").GetComponent<UISprite>().spriteName;break;
 			case 1: GameObject.Find ("move_suspect2").GetComponent<UISprite>().spriteName = GameObject.Find ("card_taunt").GetComponent<UISprite>().spriteName;break;
 			case 2: GameObject.Find ("move_suspect2").GetComponent<UISprite>().spriteName = GameObject.Find ("card_snitchAll").GetComponent<UISprite>().spriteName;break;
@@ -283,7 +276,7 @@ public class gameManager : MonoBehaviour{
 				default: Debug.Log ("user 2 didn't pick a proper action");break;			}
 		}
 		if(userIndex ==2){
-			switch(cardIndex){
+			switch(ppl[userIndex,0]  ){
 			case 0: GameObject.Find ("move_suspect3").GetComponent<UISprite>().spriteName = GameObject.Find ("card_makeAllegation").GetComponent<UISprite>().spriteName;break;
 			case 1: GameObject.Find ("move_suspect3").GetComponent<UISprite>().spriteName = GameObject.Find ("card_taunt").GetComponent<UISprite>().spriteName;break;
 			case 2: GameObject.Find ("move_suspect3").GetComponent<UISprite>().spriteName = GameObject.Find ("card_snitchAll").GetComponent<UISprite>().spriteName;break;
@@ -295,7 +288,7 @@ public class gameManager : MonoBehaviour{
 			}
 		}
 		if(userIndex ==3){
-			switch(cardIndex){
+			switch(ppl[userIndex,0] ){
 			case 0: GameObject.Find ("move_suspect4").GetComponent<UISprite>().spriteName = GameObject.Find ("card_makeAllegation").GetComponent<UISprite>().spriteName;break;
 			case 1: GameObject.Find ("move_suspect4").GetComponent<UISprite>().spriteName = GameObject.Find ("card_taunt").GetComponent<UISprite>().spriteName;break;
 			case 2: GameObject.Find ("move_suspect4").GetComponent<UISprite>().spriteName = GameObject.Find ("card_snitchAll").GetComponent<UISprite>().spriteName;break;
@@ -306,7 +299,7 @@ public class gameManager : MonoBehaviour{
 			}
 		}
 		if(userIndex ==4){
-			switch(cardIndex){
+			switch(ppl[userIndex,0] ){
 			case 0: GameObject.Find ("move_suspect5").GetComponent<UISprite>().spriteName = GameObject.Find ("card_makeAllegation").GetComponent<UISprite>().spriteName;break;
 			case 1: GameObject.Find ("move_suspect5").GetComponent<UISprite>().spriteName = GameObject.Find ("card_taunt").GetComponent<UISprite>().spriteName;break;
 			case 2: GameObject.Find ("move_suspect5").GetComponent<UISprite>().spriteName = GameObject.Find ("card_snitchAll").GetComponent<UISprite>().spriteName;break;
@@ -442,11 +435,10 @@ public class gameManager : MonoBehaviour{
 		}
 
 		Debug.Log ("Turn- "+turn);
-		resetTargetColor();
-		resetActionCardColor();
 		cardInfo_sprite.alpha = 0f;
 		turn++;
-
+		resetTargetColor();
+		resetActionCardColor();//colour reset is working-ish, but it does not reset after turn or round is over.
 	}
 
 	void resetActionCardIndex(){
@@ -461,6 +453,17 @@ public class gameManager : MonoBehaviour{
 
 	void resetActionCardColor(){
 		Debug.Log("reset colour");
+
+
+		for(int i = 0; i < 6; i++)
+		{
+			if(users[turn].hand.acArr[i].cdRemain > 0)
+			{
+				disableActionCard(i);
+			}
+		}
+		//original shit
+		/*
 		GameObject.Find ("card_makeAllegation").GetComponent<UIButton>().defaultColor=  Color.white;
 		GameObject.Find ("card_makeAllegation").GetComponent<UIButton>().UpdateColor(true,true);	
 
@@ -478,8 +481,154 @@ public class gameManager : MonoBehaviour{
 
 		GameObject.Find ("card_defend").GetComponent<UIButton>().defaultColor=  Color.white;
 		GameObject.Find ("card_defend").GetComponent<UIButton>().UpdateColor(true,true);	
-
+*/
 	}
+
+	void disableActionCard(int cardIndex){
+		switch(cardIndex){
+		case 0: 
+			GameObject.Find ("card_makeAllegation").GetComponent<UIButton>().defaultColor=  Color.gray;
+			GameObject.Find ("card_makeAllegation").GetComponent<UIButton>().UpdateColor(true,true);	
+			GameObject.Find ("card_makeAllegation").GetComponent<UIButton>().enabled = false;
+
+			GameObject.Find ("card_taunt").GetComponent<UIButton>().defaultColor=  Color.white;
+			GameObject.Find ("card_taunt").GetComponent<UIButton>().UpdateColor(true,true);	
+			
+			GameObject.Find ("card_snitchAll").GetComponent<UIButton>().defaultColor=  Color.white;
+			GameObject.Find ("card_snitchAll").GetComponent<UIButton>().UpdateColor(true,true);	
+			
+			GameObject.Find ("card_blame").GetComponent<UIButton>().defaultColor=  Color.white;
+			GameObject.Find ("card_blame").GetComponent<UIButton>().UpdateColor(true,true);	
+			
+			GameObject.Find ("card_reason").GetComponent<UIButton>().defaultColor=  Color.white;
+			GameObject.Find ("card_reason").GetComponent<UIButton>().UpdateColor(true,true);	
+			
+			GameObject.Find ("card_defend").GetComponent<UIButton>().defaultColor=  Color.white;
+			GameObject.Find ("card_defend").GetComponent<UIButton>().UpdateColor(true,true);
+			break;
+		case 1: 
+			GameObject.Find ("card_makeAllegation").GetComponent<UIButton>().defaultColor=  Color.white;
+			GameObject.Find ("card_makeAllegation").GetComponent<UIButton>().UpdateColor(true,true);	
+			
+			GameObject.Find ("card_taunt").GetComponent<UIButton>().defaultColor=  Color.gray;
+			GameObject.Find ("card_taunt").GetComponent<UIButton>().UpdateColor(true,true);	
+			GameObject.Find ("card_taunt").GetComponent<UIButton>().enabled = false;
+
+			GameObject.Find ("card_snitchAll").GetComponent<UIButton>().defaultColor=  Color.white;
+			GameObject.Find ("card_snitchAll").GetComponent<UIButton>().UpdateColor(true,true);	
+			
+			GameObject.Find ("card_blame").GetComponent<UIButton>().defaultColor=  Color.white;
+			GameObject.Find ("card_blame").GetComponent<UIButton>().UpdateColor(true,true);	
+			
+			GameObject.Find ("card_reason").GetComponent<UIButton>().defaultColor=  Color.white;
+			GameObject.Find ("card_reason").GetComponent<UIButton>().UpdateColor(true,true);	
+			
+			GameObject.Find ("card_defend").GetComponent<UIButton>().defaultColor=  Color.white;
+			GameObject.Find ("card_defend").GetComponent<UIButton>().UpdateColor(true,true);break;
+		case 2:
+			GameObject.Find ("card_makeAllegation").GetComponent<UIButton>().defaultColor=  Color.white;
+			GameObject.Find ("card_makeAllegation").GetComponent<UIButton>().UpdateColor(true,true);	
+			
+			GameObject.Find ("card_taunt").GetComponent<UIButton>().defaultColor=  Color.white;
+			GameObject.Find ("card_taunt").GetComponent<UIButton>().UpdateColor(true,true);	
+			
+			GameObject.Find ("card_snitchAll").GetComponent<UIButton>().defaultColor=  Color.gray;
+			GameObject.Find ("card_snitchAll").GetComponent<UIButton>().UpdateColor(true,true);	
+			GameObject.Find ("card_snitchAll").GetComponent<UIButton>().enabled = false;	
+
+			GameObject.Find ("card_blame").GetComponent<UIButton>().defaultColor=  Color.white;
+			GameObject.Find ("card_blame").GetComponent<UIButton>().UpdateColor(true,true);	
+			
+			GameObject.Find ("card_reason").GetComponent<UIButton>().defaultColor=  Color.white;
+			GameObject.Find ("card_reason").GetComponent<UIButton>().UpdateColor(true,true);	
+			
+			GameObject.Find ("card_defend").GetComponent<UIButton>().defaultColor=  Color.white;
+			GameObject.Find ("card_defend").GetComponent<UIButton>().UpdateColor(true,true);break;
+		case 3:
+			GameObject.Find ("card_makeAllegation").GetComponent<UIButton>().defaultColor=  Color.white;
+			GameObject.Find ("card_makeAllegation").GetComponent<UIButton>().UpdateColor(true,true);	
+			
+			GameObject.Find ("card_taunt").GetComponent<UIButton>().defaultColor=  Color.white;
+			GameObject.Find ("card_taunt").GetComponent<UIButton>().UpdateColor(true,true);	
+			
+			GameObject.Find ("card_snitchAll").GetComponent<UIButton>().defaultColor=  Color.white;
+			GameObject.Find ("card_snitchAll").GetComponent<UIButton>().UpdateColor(true,true);	
+			
+			GameObject.Find ("card_blame").GetComponent<UIButton>().defaultColor=  Color.gray;
+			GameObject.Find ("card_blame").GetComponent<UIButton>().UpdateColor(true,true);	
+			GameObject.Find ("card_blame").GetComponent<UIButton>().enabled = false;	
+
+			GameObject.Find ("card_reason").GetComponent<UIButton>().defaultColor=  Color.white;
+			GameObject.Find ("card_reason").GetComponent<UIButton>().UpdateColor(true,true);	
+			
+			GameObject.Find ("card_defend").GetComponent<UIButton>().defaultColor=  Color.white;
+			GameObject.Find ("card_defend").GetComponent<UIButton>().UpdateColor(true,true);break;
+		case 4: 
+			GameObject.Find ("card_makeAllegation").GetComponent<UIButton>().defaultColor=  Color.white;
+			GameObject.Find ("card_makeAllegation").GetComponent<UIButton>().UpdateColor(true,true);	
+			
+			GameObject.Find ("card_taunt").GetComponent<UIButton>().defaultColor=  Color.white;
+			GameObject.Find ("card_taunt").GetComponent<UIButton>().UpdateColor(true,true);	
+			
+			GameObject.Find ("card_snitchAll").GetComponent<UIButton>().defaultColor=  Color.white;
+			GameObject.Find ("card_snitchAll").GetComponent<UIButton>().UpdateColor(true,true);	
+			
+			GameObject.Find ("card_blame").GetComponent<UIButton>().defaultColor=  Color.white;
+			GameObject.Find ("card_blame").GetComponent<UIButton>().UpdateColor(true,true);	
+			
+			GameObject.Find ("card_reason").GetComponent<UIButton>().defaultColor=  Color.gray;
+			GameObject.Find ("card_reason").GetComponent<UIButton>().UpdateColor(true,true);	
+			GameObject.Find ("card_reason").GetComponent<UIButton>().enabled = false;	
+
+			GameObject.Find ("card_defend").GetComponent<UIButton>().defaultColor=  Color.white;
+			GameObject.Find ("card_defend").GetComponent<UIButton>().UpdateColor(true,true);break;
+		case 5:
+			GameObject.Find ("card_makeAllegation").GetComponent<UIButton>().defaultColor=  Color.white;
+			GameObject.Find ("card_makeAllegation").GetComponent<UIButton>().UpdateColor(true,true);	
+			
+			GameObject.Find ("card_taunt").GetComponent<UIButton>().defaultColor=  Color.white;
+			GameObject.Find ("card_taunt").GetComponent<UIButton>().UpdateColor(true,true);	
+			
+			GameObject.Find ("card_snitchAll").GetComponent<UIButton>().defaultColor=  Color.white;
+			GameObject.Find ("card_snitchAll").GetComponent<UIButton>().UpdateColor(true,true);	
+			
+			GameObject.Find ("card_blame").GetComponent<UIButton>().defaultColor=  Color.white;
+			GameObject.Find ("card_blame").GetComponent<UIButton>().UpdateColor(true,true);	
+			
+			GameObject.Find ("card_reason").GetComponent<UIButton>().defaultColor=  Color.white;
+			GameObject.Find ("card_reason").GetComponent<UIButton>().UpdateColor(true,true);	
+			
+			GameObject.Find ("card_defend").GetComponent<UIButton>().defaultColor=  Color.gray;
+			GameObject.Find ("card_defend").GetComponent<UIButton>().UpdateColor(true,true);break;
+			GameObject.Find ("card_defend").GetComponent<UIButton>().enabled = false;	
+		default:
+			GameObject.Find ("card_makeAllegation").GetComponent<UIButton>().defaultColor=  Color.white;
+			GameObject.Find ("card_makeAllegation").GetComponent<UIButton>().UpdateColor(true,true);	
+			GameObject.Find ("card_makeAllegation").GetComponent<UIButton>().enabled = true;
+
+			GameObject.Find ("card_taunt").GetComponent<UIButton>().defaultColor=  Color.white;
+			GameObject.Find ("card_taunt").GetComponent<UIButton>().UpdateColor(true,true);	
+			GameObject.Find ("card_taunt").GetComponent<UIButton>().enabled = true;
+
+			GameObject.Find ("card_snitchAll").GetComponent<UIButton>().defaultColor=  Color.white;
+			GameObject.Find ("card_snitchAll").GetComponent<UIButton>().UpdateColor(true,true);	
+			GameObject.Find ("card_snitchAll").GetComponent<UIButton>().enabled = true;
+
+			GameObject.Find ("card_blame").GetComponent<UIButton>().defaultColor=  Color.white;
+			GameObject.Find ("card_blame").GetComponent<UIButton>().UpdateColor(true,true);	
+			GameObject.Find ("card_blame").GetComponent<UIButton>().enabled = true;
+
+			GameObject.Find ("card_reason").GetComponent<UIButton>().defaultColor=  Color.white;
+			GameObject.Find ("card_reason").GetComponent<UIButton>().UpdateColor(true,true);	
+			GameObject.Find ("card_reason").GetComponent<UIButton>().enabled = true;
+
+			GameObject.Find ("card_defend").GetComponent<UIButton>().defaultColor=  Color.white;
+			GameObject.Find ("card_defend").GetComponent<UIButton>().UpdateColor(true,true);
+			GameObject.Find ("card_defend").GetComponent<UIButton>().enabled = true;
+			break;
+		}
+	}
+
 
 	void resetTargetColor(){
 		Debug.Log("reset target colour");
@@ -1247,12 +1396,13 @@ public class gameManager : MonoBehaviour{
 		}
 		isCombat = true;
 
-		for(int i = 0; i < 6; i++)
+		for(int i = 0; i < 5; i++)
 		{
-			cardChoiceReveal(i, ppl[i,0]);
+			cardChoiceReveal(i);
 
-		}
+		}Debug.Log ("next round btn enabled");
 		btnNextRound.enabled = true;
+
 	}
 
 	public int comparePriorities(int i, int j)
@@ -1517,7 +1667,7 @@ public class gameManager : MonoBehaviour{
 			setPlayerPoints(i);
 			users[i].newRoundStatReset();
 
-		//	setCooldownOnCard(i,ppl[i,0])
+			//setCooldownOnCard(i);
 		}
 
 
@@ -1537,7 +1687,10 @@ public class gameManager : MonoBehaviour{
 
 	}
 
-	//public void setCooldownOnCard
+	public void setCooldownOnCard(int userIndex){
+	
+			users[userIndex].hand.acArr[ppl[userIndex,0]].cdRemain = users[userIndex].hand.acArr[ppl[userIndex,0]].cooldown;
+	}
 
 
 	public void setPlayerPoints(int userIndex){
