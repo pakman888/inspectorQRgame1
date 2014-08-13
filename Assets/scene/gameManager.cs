@@ -39,6 +39,13 @@ public class gameManager : MonoBehaviour{
 	public UIWidget msw; //contains user info with hp bar
 	public UIWidget mrw;
 	public UIWidget end;
+
+	//used to inidcate next user's turn
+	public UIWidget turnWid;
+	public UISprite []nextUserTurn;
+	public UIButton btnNxtTrn;
+	public bool nextTurn;
+
 	public UIButton btnP1;
 	public UIButton btnP2;
 	public UIButton btnP3;
@@ -60,6 +67,9 @@ public class gameManager : MonoBehaviour{
 	public UIButton ac3;
 	public UIButton ac4;
 	public UIButton ac5;
+	public bool movSelWid;
+
+
 
 	public bool singleTarget;
 	public int singleTargetVictim;
@@ -92,10 +102,14 @@ public class gameManager : MonoBehaviour{
 	public UISprite card_player4Choice;
 	public UISprite card_player5Choice;
 	public bool cardsOnCD;
+	public bool movRevWid;
+
 
 	public bool isCombat;
 	// Use this for initialization
 	void Start () {
+		movRevWid = false;
+		nextTurn = true;
 		cardsOnCD = false;
 		isCombat = false;
 		showCards = false;
@@ -105,6 +119,7 @@ public class gameManager : MonoBehaviour{
 		dmgAll = false;
 		btnNextRound.enabled = false;
 		actIndex = -1;
+		movSelWid = false;
 		round = 0;
 		maxRound = 2;
 		turn = 0;
@@ -129,6 +144,7 @@ public class gameManager : MonoBehaviour{
 		mrw.alpha = 0.0f;
 		mrw.enabled = false;
 
+
 		pickedAction = false;
 		disablemswBtns();
 	
@@ -146,10 +162,126 @@ public class gameManager : MonoBehaviour{
 
 		//reSetP1SuspicionPoints();
 	}
+
+	void showTurnWidget(){
+		turn_wid.enabled = true;
+		turn_wid.alpha = 1.0f;
+		btnNxtTrn.enabled = true;
 	
+		if(turn== 0)
+			nextUserTurn[turn].depth = 10;
+		else
+			if(turn >0)
+		{
+			nextUserTurn[turn-1].depth = -3;
+			nextUserTurn[turn].depth = 10;
+		}
+	}
+
+	
+	void hideTurnWidget(){
+		turn_wid.enabled = false;
+		turn_wid.alpha = 0f;
+		btnNxtTrn.enabled = false;
+		movSelWid = true;
+	}
+
+	void showMovSelWid(){
+		Debug.Log ("hiding move select widget");
+		msw.enabled = true;
+		msw.alpha = 1f;
+	}
+
+	void hideMovSelWid(){
+		Debug.Log ("hiding move select widget");
+		msw.enabled = false;
+		msw.alpha = 0.0f;
+	}
+
+	void hideMovRevWid(){
+		mrw.alpha = 0.0f;
+		mrw.enabled = false;
+		btnNextRound.enabled = false;
+	}
+
+	void showMovRevWid(){
+		mrw.enabled = true;
+		mrw.alpha = 1.0f;
+		btnNextRound.enabled = true;
+
+	}
 	// Update is called once per frame
 	void Update () {
 
+		if(roundBegins == true){
+			GameObject.Find("rounds").GetComponent<UILabel>().text = "Round "+ (round+1);
+			if(round < maxRound)
+			{
+				if(turn <5){
+
+				if(nextTurn == true)
+				{
+					hideMovSelWid();
+					showTurnWidget();
+				}
+				
+				if(movSelWid== true)
+				{//this is good
+					hideTurnWidget();
+					showMovSelWid();
+					ckeckUserBtnDisable();
+				}
+				//ckeckUserBtnDisable();
+			}
+			else
+			if(turn ==5){
+
+				//round++;
+				//turn = 0;
+				//nextTurn = true;
+				//enableButton(btnP5);
+				movRevWid = true;
+				hideTurnWidget();
+				hideMovSelWid();
+			}
+
+			if(movRevWid == true)
+			{
+			//	hideMovSelWid();
+				showMovRevWid();
+
+					movRevWid = false;
+			//	revealacArr();//stupid next turn button is enabled...
+				showCards = true;
+				isCombat = true;
+			//	movRevWid = false;
+			}
+			if(showCards == true)
+			{
+				Debug.Log ("show cards is true");
+				if(isCombat == true)
+					combatPhase();	
+				//if(cardsOnCD == true)
+				//{
+			//		reduceCardCoolDown();
+			//	}
+			}
+
+		}
+			else
+			if(round>= maxRound){
+				roundBegins = false;
+			}
+		}
+		else
+		if(roundBegins == false){
+				//Debug.Log("end of game");
+			hideMovSelWid();
+			hideMovSelWid();
+			hideTurnWidget();
+			Application.LoadLevel("ending");
+		}
+		/*
 		
 		if(roundBegins == true)
 		{
@@ -227,26 +359,29 @@ public class gameManager : MonoBehaviour{
 				}
 			}
 		}
+
+*/
+	}
+
+	public void btnNextTurn()
+	{
+		movSelWid = true;
+		//turn++;
+		//Debug.Log ("btnNextTurn");
 	}
 
 	public void nextRound(){
 		round++;
-		if(mrw.alpha >=1)
-		{
-			mrw.alpha= 0f;
-			mrw.enabled= false;
-			btnNextRound.enabled = false;
-		}
-		
-		if(mrw.alpha <=0)
-		{
-			msw.alpha= 1f;
-			msw.enabled= true;
-		}		
-		showCards = false;
-		cardsOnCD = true;
 
-		Debug.Log ("next round clicked");
+		Debug.Log ("next round. Hiding moveRev && movSel");
+		hideMovRevWid();
+		hideMovSelWid();
+		showCards = false;
+		movRevWid = false;
+		movSelWid = false;
+		nextTurn= true;
+		turn = 0;
+		//Debug.Log ("next round clicked");
 	}
 	
 
@@ -439,6 +574,9 @@ public class gameManager : MonoBehaviour{
 		turn++;
 		resetTargetColor();
 		resetActionCardColor();//colour reset is working-ish, but it does not reset after turn or round is over.
+
+		movSelWid = false;
+		nextTurn = true;
 	}
 
 	void resetActionCardIndex(){
@@ -454,16 +592,16 @@ public class gameManager : MonoBehaviour{
 	void resetActionCardColor(){
 		Debug.Log("reset colour");
 
-
+		/*
 		for(int i = 0; i < 6; i++)
 		{
 			if(users[turn].hand.acArr[i].cdRemain > 0)
 			{
 				disableActionCard(i);
 			}
-		}
+		}*/
 		//original shit
-		/*
+
 		GameObject.Find ("card_makeAllegation").GetComponent<UIButton>().defaultColor=  Color.white;
 		GameObject.Find ("card_makeAllegation").GetComponent<UIButton>().UpdateColor(true,true);	
 
@@ -481,7 +619,7 @@ public class gameManager : MonoBehaviour{
 
 		GameObject.Find ("card_defend").GetComponent<UIButton>().defaultColor=  Color.white;
 		GameObject.Find ("card_defend").GetComponent<UIButton>().UpdateColor(true,true);	
-*/
+
 	}
 
 	void disableActionCard(int cardIndex){
@@ -1382,26 +1520,13 @@ public class gameManager : MonoBehaviour{
 
 	public void revealacArr(){
 		Debug.Log ("reveal cards");
-		turn = 0;
-		
-		if(msw.alpha >0.01)
-		{
-			msw.alpha= 0f;
-			msw.enabled= false;
-		}
-		
-		if(msw.alpha <=0.01 && mrw.alpha <=0.01)
-		{
-			mrw.alpha= 1f;
-		}
-		isCombat = true;
-
+	
 		for(int i = 0; i < 5; i++)
 		{
 			cardChoiceReveal(i);
 
 		}Debug.Log ("next round btn enabled");
-		btnNextRound.enabled = true;
+
 
 	}
 
