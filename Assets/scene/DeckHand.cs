@@ -20,9 +20,7 @@ public class DeckHand : MonoBehaviour {
 	void setacArr(int index, actionCard ac){
 		switch(index)
 		{
-			//setActionCard(bool isAttack, bool isDef, bool repAtkConseq,bool isDmgDealer, bool singlePlayerDmg, bool isHeal,
-			// bool isBlock, bool actionSuccessful, int suspicionDmg, int cd, int limit )
-			//default, actions are not successful (false)
+			//setActionCard(bool isA, bool isD, bool isRAC,bool isDD, bool isSPD, bool isH, bool isB, bool isAs, int sD,int cd, int limit, int pri )
 		case 0: ac.setActionCard(true, false, false ,true,true , false, false, false, 1, 1, 10, 1); break; //allegation
 		case 1: ac.setActionCard(true, false, false, false,true,false, false, false, 0, 1, 10, 5);break;//taunt
 		case 2: ac.setActionCard(true, false, true, true, false, false, false, false, 3, 2, 2, 2);break; //snitch
