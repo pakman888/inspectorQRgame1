@@ -262,12 +262,12 @@ public class gameManager : MonoBehaviour{
 				
 				if(movRevWid == true)
 				{
+					Debug.Log("MovRevWid = true");
 						showMovRevWid();
-					
-							movRevWid = false;
-							revealacArr();
-							showCards = true;
-							isCombat = true;
+						movRevWid = false;
+						revealacArr();
+						showCards = true;
+						isCombat = true;
 						movRevWid = false;
 				}
 				if(showCards == true)
@@ -307,73 +307,11 @@ public class gameManager : MonoBehaviour{
 			
 			
 		}
-		/*
+
 		
-		if(roundBegins == true)
-		{
-
-				if(round>0){
-			
-			}
-		//	Debug.Log ("user index "+turn+"'s cd time for act1-> "+users[turn].hand.acArr[ppl[turn,0]].cdRemain);
-			if(actIndex ==-1)
-			{
-				btnEndTurn.enabled = false;
-				btnEndTurn.defaultColor = btnEndTurn.disabledColor;
-			}
-			else
-				if(actIndex >-1)
-			{
-				btnEndTurn.enabled = true;
-				btnEndTurn.defaultColor = new Color(136,218,69,255);
-			}
-				
-				if(round < maxRound){
-				 GameObject.Find("rounds").GetComponent<UILabel>().text = "Round "+ (round+1);
-				if(turn <5){
-
-					ckeckUserBtnDisable();
-				}
-				else
-					if(turn ==5){
-					Debug.Log ("over 5 turns.");
-					enableButton(btnP5);
-					revealacArr();
-					showCards = true;
-					
-				}
-				
-				if(showCards == true)
-				{
-					Debug.Log ("show cards is true");
-					if(isCombat == true)
-						combatPhase();	
-					if(cardsOnCD == true)
-					{
-						reduceCardCoolDown();
-					}
-				}
-
-			}
-			else
-				if(round>= maxRound){
-				roundBegins = false;
-			}
-		}
-		else
-		if(roundBegins == false)
-		{
-			//Debug.Log("end of game");
-			msw.alpha = 0f;
-			mrw.alpha = 0f;
-			msw.enabled = false;
-			mrw.enabled = false;
-			
-			//end.alpha = 1f;
-			Application.LoadLevel("ending");
-		}
 	}
 
+	/*
 	public void reduceCardCoolDown(){
 		for(int i = 0; i < users.Length; i++)
 		{
@@ -387,7 +325,7 @@ public class gameManager : MonoBehaviour{
 		}
 
 */
-	}
+
 	
 	public void btnNextTurn()
 	{
@@ -447,12 +385,27 @@ public class gameManager : MonoBehaviour{
 		{
 			if(userIndex == 0)
 			{
-				revealP1Targets[users[userIndex].atkUserIndex].depth = 14;
+				switch(users[userIndex].atkUserIndex){
+				case 1:  revealP1Targets[1].depth = 14;break;
+				case 2:  revealP1Targets[0].depth = 14;break;
+				case 3:  revealP1Targets[2].depth = 14;break;
+				case 4:  revealP1Targets[3].depth = 14;break;
+				default: ;break;
+				}
+
+				//revealP1Targets[users[userIndex].atkUserIndex].depth = 14;
 			}
 			
 			if(userIndex == 1)
 			{
-				revealP2Targets[users[userIndex].atkUserIndex].depth = 14;
+				switch(users[userIndex].atkUserIndex){
+				case 0:  revealP2Targets[1].depth = 14;break;
+				case 2:  revealP2Targets[2].depth = 14;break;
+				case 3:  revealP2Targets[2].depth = 14;break;
+				case 4:  revealP2Targets[3].depth = 14;break;
+				default: ;break;
+				}
+				//revealP2Targets[users[userIndex].atkUserIndex].depth = 14;
 			}
 			if(userIndex == 2)
 			{
@@ -660,12 +613,15 @@ public class gameManager : MonoBehaviour{
 				users[turn].isHealing = true;
 				users[turn].usedHealSnitchDef = false;
 				users[turn].hand.acArr[ppl[turn,0]].limit -=1;
+				users[turn].atkUserIndex = turn;
+
 				Debug.Log ("single heal");
 			}
 			
 			if(users[turn].hand.acArr[actIndex].isBlock == true)
 			{
 				users[turn].isDefending = true;
+				users[turn].atkUserIndex = turn;
 				Debug.Log ("single block ");
 			}
 			
@@ -1627,7 +1583,7 @@ public class gameManager : MonoBehaviour{
 		for(int i = 0; i < 5; i++)
 		{
 			cardChoiceReveal(i);
-			//	playerTargetReveal(i);
+			playerTargetReveal(i);
 			
 		}Debug.Log ("next round btn enabled");
 		
