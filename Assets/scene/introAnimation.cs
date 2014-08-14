@@ -8,7 +8,7 @@ public class introAnimation : MonoBehaviour {
 	public Animator clip;
 	// Use this for initialization
 	void Start () {
-
+		
 	}
 	
 	// Update is called once per frame
