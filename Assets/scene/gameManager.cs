@@ -119,14 +119,7 @@ public class gameManager : MonoBehaviour{
 	public bool isCombat;
 	// Use this for initialization
 	void Start () {
-		revealP1Targets = new UISprite[4];
-		revealP2Targets = new UISprite[4];
-		revealP3Targets = new UISprite[4];
-		revealP4Targets = new UISprite[4];
-		revealP5Targets = new UISprite[4];
-		
-		
-		
+	
 		fileName = "/saveWinnerIndex.txt";
 		
 		
@@ -350,29 +343,32 @@ public class gameManager : MonoBehaviour{
 	
 	
 	void playerTargetReveal(int userIndex){
-		
+
+
+		Debug.Log ("displaying victims");
 		if(users[userIndex].hand.acArr[ppl[userIndex,0]].isSnitch() == true){
 			//snitching everyone
+			Debug.Log ("snitching display");
 			for(int i = 0; i < 4; i++)
 			{
-				if(userIndex == 0)
+				if(userIndex == 0 && i!= userIndex)
 				{
 					revealP1Targets[i].depth = 14;
 				}
 				
-				if(userIndex == 1)
+				if(userIndex == 1 && i!= userIndex)
 				{
 					revealP2Targets[i].depth = 14;
 				}
-				if(userIndex == 2)
+				if(userIndex == 2 && i!= userIndex)
 				{
 					revealP3Targets[i].depth = 14;
 				}
-				if(userIndex == 3)
+				if(userIndex == 3 && i!= userIndex)
 				{
 					revealP4Targets[i].depth = 14;
 				}
-				if(userIndex == 4)
+				if(userIndex == 4 && i!= userIndex)
 				{
 					revealP5Targets[i].depth = 14;
 				}
@@ -386,10 +382,12 @@ public class gameManager : MonoBehaviour{
 			if(userIndex == 0)
 			{
 				switch(users[userIndex].atkUserIndex){
+				//case 0:  revealP1Targets[0].depth = 14;break;
 				case 1:  revealP1Targets[1].depth = 14;break;
-				case 2:  revealP1Targets[0].depth = 14;break;
-				case 3:  revealP1Targets[2].depth = 14;break;
-				case 4:  revealP1Targets[3].depth = 14;break;
+				case 2:  revealP1Targets[2].depth = 14;break;
+				case 3:  revealP1Targets[3].depth = 14;break;
+				case 4:  revealP1Targets[4].depth = 14;break;
+
 				default: ;break;
 				}
 
@@ -399,28 +397,67 @@ public class gameManager : MonoBehaviour{
 			if(userIndex == 1)
 			{
 				switch(users[userIndex].atkUserIndex){
-				case 0:  revealP2Targets[1].depth = 14;break;
+				case 0:  revealP2Targets[0].depth = 14;break;
+				//case 1:  revealP1Targets[1].depth = 14;break;
 				case 2:  revealP2Targets[2].depth = 14;break;
-				case 3:  revealP2Targets[2].depth = 14;break;
-				case 4:  revealP2Targets[3].depth = 14;break;
+				case 3:  revealP2Targets[3].depth = 14;break;
+				case 4:  revealP2Targets[4].depth = 14;break;
+					
 				default: ;break;
 				}
+
 				//revealP2Targets[users[userIndex].atkUserIndex].depth = 14;
 			}
 			if(userIndex == 2)
 			{
-				revealP3Targets[users[userIndex].atkUserIndex].depth = 14;
+				switch(users[userIndex].atkUserIndex){
+				case 0:  revealP3Targets[0].depth = 14;break;
+				case 1:  revealP3Targets[1].depth = 14;break;
+				//case 2:  revealP2Targets[2].depth = 14;break;
+				case 3:  revealP3Targets[3].depth = 14;break;
+				case 4:  revealP3Targets[4].depth = 14;break;
+					
+				default: ;break;
+				}
 			}
 			if(userIndex == 3)
 			{
-				revealP4Targets[users[userIndex].atkUserIndex].depth = 14;
+				switch(users[userIndex].atkUserIndex){
+				case 0:  revealP4Targets[0].depth = 14;break;
+				case 1:  revealP4Targets[1].depth = 14;break;
+				case 2:  revealP4Targets[2].depth = 14;break;
+				//case 3:  revealP4Targets[3].depth = 14;break;
+				case 4:  revealP4Targets[4].depth = 14;break;
+					
+				default: ;break;
+				}
 			}
 			if(userIndex == 4)
 			{
-				revealP5Targets[users[userIndex].atkUserIndex].depth = 14;
+				switch(users[userIndex].atkUserIndex){
+				case 0:  revealP5Targets[0].depth = 14;break;
+				case 1:  revealP5Targets[1].depth = 14;break;
+				case 2:  revealP5Targets[2].depth = 14;break;
+				case 3:  revealP5Targets[3].depth = 14;break;
+				//case 4:  revealP2Targets[4].depth = 14;break;	
+				default: ;break;
+				}
 			}
 			
 		}
+
+		if(users[userIndex].isHealing == true || users[userIndex].isDefending == true)
+		{
+			switch(userIndex){
+			case 0: revealP1Targets[0].depth = 14;break;
+			case 1: revealP2Targets[1].depth = 14;break;
+			case 2: revealP3Targets[2].depth = 14;break;
+			case 3: revealP4Targets[3].depth = 14;break;
+			case 4: revealP5Targets[4].depth = 14;break;
+			default: ;break;
+			}
+		}
+
 	}
 	
 	
